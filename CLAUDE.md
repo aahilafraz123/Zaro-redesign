@@ -9,3 +9,5 @@
 - Use Playwright MCP to click through and verify UI changes; use Chrome DevTools MCP
   for console, network, and performance inspection.
 - Follow the `gpt-taste` skill (`.claude/skills/gpt-taste`) for frontend design work.
+
+@AGENTS.md

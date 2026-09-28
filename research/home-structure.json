@@ -1,0 +1,305 @@
+{
+  "colors": [
+    [
+      "rgb(28, 26, 23)",
+      390
+    ],
+    [
+      "rgb(92, 87, 82)",
+      134
+    ],
+    [
+      "rgb(138, 133, 128)",
+      86
+    ],
+    [
+      "rgb(0, 0, 0)",
+      48
+    ],
+    [
+      "rgb(6, 148, 148)",
+      35
+    ],
+    [
+      "rgb(255, 255, 255)",
+      26
+    ],
+    [
+      "rgb(92, 140, 110)",
+      9
+    ],
+    [
+      "rgba(108, 117, 129, 0.45)",
+      4
+    ],
+    [
+      "rgb(6, 128, 128)",
+      4
+    ],
+    [
+      "rgb(143, 180, 160)",
+      2
+    ],
+    [
+      "rgba(108, 117, 129, 0.5)",
+      2
+    ],
+    [
+      "rgba(255, 255, 255, 0.6)",
+      2
+    ],
+    [
+      "",
+      1
+    ],
+    [
+      "rgb(224, 139, 132)",
+      1
+    ],
+    [
+      "rgba(255, 255, 255, 0.65)",
+      1
+    ],
+    [
+      "rgba(255, 255, 255, 0.8)",
+      1
+    ],
+    [
+      "rgba(255, 255, 255, 0.55)",
+      1
+    ],
+    [
+      "rgba(255, 255, 255, 0.75)",
+      1
+    ]
+  ],
+  "bgs": [
+    [
+      "rgba(0, 0, 0, 0)",
+      563
+    ],
+    [
+      "rgb(255, 255, 255)",
+      101
+    ],
+    [
+      "rgb(6, 148, 148)",
+      18
+    ],
+    [
+      "rgb(247, 245, 242)",
+      16
+    ],
+    [
+      "rgb(235, 249, 249)",
+      10
+    ],
+    [
+      "rgb(92, 140, 110)",
+      7
+    ],
+    [
+      "rgb(224, 221, 216)",
+      7
+    ],
+    [
+      "rgb(28, 26, 23)",
+      4
+    ],
+    [
+      "rgba(92, 140, 110, 0.094)",
+      3
+    ],
+    [
+      "rgb(194, 229, 229)",
+      3
+    ],
+    [
+      "rgb(232, 229, 225)",
+      2
+    ],
+    [
+      "rgba(255, 255, 255, 0.6)",
+      2
+    ],
+    [
+      "rgb(12, 59, 59)",
+      2
+    ],
+    [
+      "rgba(255, 255, 255, 0.95)",
+      1
+    ],
+    [
+      "",
+      1
+    ],
+    [
+      "rgb(116, 121, 102)",
+      1
+    ],
+    [
+      "rgb(200, 197, 192)",
+      1
+    ],
+    [
+      "rgb(143, 180, 160)",
+      1
+    ],
+    [
+      "rgba(92, 140, 110, 0.1)",
+      1
+    ],
+    [
+      "rgba(6, 148, 148, 0.1)",
+      1
+    ]
+  ],
+  "fonts": [
+    [
+      "Quicksand, \"Quicksand Fallback\", system-ui, sans-serif",
+      581
+    ],
+    [
+      "\"DM Mono\", ui-monospace, monospace",
+      86
+    ],
+    [
+      "\"Inclusive Sans\", \"Inclusive Sans Fallback\", Georgia, serif",
+      80
+    ],
+    [
+      "",
+      1
+    ]
+  ],
+  "sections": [
+    {
+      "tag": "HEADER",
+      "id": "",
+      "cls": "fixed left-0 right-0 z-50 transition-all duration-300",
+      "h": 65,
+      "text": "OUR TESTS | HOW IT WORKS | PRICING | BLOG | ABOUT | CONTACT | GET STARTED"
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "cls": "flex flex-col md:grid",
+      "h": 900,
+      "text": "FOR A LONG, HEALTHY LIFE. | Feeling sluggish, foggy, or just off? Don't blame your age. Your biomarkers are out of balance"
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "cls": "",
+      "h": 126,
+      "text": "150+ | BIOMARKERS TRACKED | 300+ | WEARABLE DEVICES | FSA/HSA | ELIGIBLE | $0 | DOCTOR VISIT REQUIRED"
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "cls": "py-24 md:py-32",
+      "h": 1644,
+      "text": "ZARO SCORE | One score. Your whole health story. |  | Zaro brings together your bloodwork, wearable signals, and lifestyle int"
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "cls": "py-24 md:py-32",
+      "h": 1513,
+      "text": "INTELLIGENCE ENGINES | From data to action. Every single day. |  | Most platforms hand you a report and hope you read it. Zaro"
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "cls": "py-24 md:py-32",
+      "h": 1129,
+      "text": "OUR PACKAGES | Three levels of understanding |  | No one in the market has packaged blood testing like this. Our cascade model"
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "cls": "py-24 overflow-hidden",
+      "h": 488,
+      "text": "WEARABLE INTEGRATIONS | Your wearable already knows a lot. We read it all. |  | Zaro connects with 300+ devices, syncing your "
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "cls": "",
+      "h": 539,
+      "text": "FSA / HSA ELIGIBLE | Don't save your health dollars for when you're sick. |  | You have been setting aside pre-tax money in yo"
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "cls": "py-24 md:py-32",
+      "h": 687,
+      "text": "HOW IT WORKS | From order to answers in days. |  | No waiting rooms. No referrals. No insurance hoops. Order online, choose ho"
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "cls": "py-20",
+      "h": 628,
+      "text": "LAB NETWORK | Processed by the labs your doctor uses |  | Every Zaro panel is currently processed at CLIA-certified Quest Diag"
+    },
+    {
+      "tag": "SECTION",
+      "id": "",
+      "cls": "py-24 md:py-32 text-center",
+      "h": 597,
+      "text": "Start knowing your body. |  | Choose a panel, schedule your blood draw, and get answers that actually explain what is happen"
+    },
+    {
+      "tag": "FOOTER",
+      "id": "",
+      "cls": "",
+      "h": 578,
+      "text": "Preventive health intelligence for everyone. Know your body before it tells you something is wrong. |  | Download on the | App"
+    }
+  ],
+  "imgs": [
+    "https://zarohealth.com/video/zarohealth.mp4",
+    "https://zarohealth.com/logos/app-qr-code.svg"
+  ],
+  "bgImgs": [
+    "linear-gradient(to right, rgb(255, 255, 255) 20%, rgba(0, 0, 0, 0))"
+  ],
+  "links": [
+    " -> https://zarohealth.com/",
+    "OUR TESTS -> https://zarohealth.com/our-tests",
+    "HOW IT WORKS -> https://zarohealth.com/how-it-works",
+    "PRICING -> https://zarohealth.com/pricing",
+    "BLOG -> https://zarohealth.com/blog",
+    "ABOUT -> https://zarohealth.com/about",
+    "CONTACT -> https://zarohealth.com/contact",
+    "GET STARTED -> https://zarohealth.com/pricing",
+    "Get Started -> https://zarohealth.com/pricing",
+    "See how it works → -> https://zarohealth.com/how-it-works",
+    "Explore the science behind our tests → -> https://zarohealth.com/our-tests",
+    "See the full process → -> https://zarohealth.com/how-it-works",
+    "See Pricing -> https://zarohealth.com/pricing",
+    "Explore Our Tests -> https://zarohealth.com/our-tests",
+    "Download on the\nApp Store -> https://apps.apple.com/app/6782261771",
+    "Get it on\nGoogle Play -> https://play.google.com/store/apps/details?id=com.zarohealth.app",
+    "Our Tests -> https://zarohealth.com/our-tests",
+    "How It Works -> https://zarohealth.com/how-it-works",
+    "Pricing -> https://zarohealth.com/pricing",
+    "About -> https://zarohealth.com/about",
+    "Blog -> https://zarohealth.com/blog",
+    "FAQ -> https://zarohealth.com/faq",
+    "Contact -> https://zarohealth.com/contact",
+    "Terms of Service -> https://zarohealth.com/terms",
+    "Privacy Policy -> https://zarohealth.com/privacy",
+    "HIPAA Authorization -> https://zarohealth.com/hipaa-authorization",
+    " -> https://www.facebook.com/profile.php?id=61576446315228",
+    " -> https://www.instagram.com/zarohealth26/",
+    " -> https://x.com/ZaroHealth",
+    " -> https://www.linkedin.com/company/zarohealth",
+    " -> https://www.reddit.com/r/ZaroHealth/"
+  ],
+  "cssVars": "",
+  "height": 8828,
+  "metaDesc": "Zaro Health offers comprehensive blood testing, wearable integration, and a personalized Zaro Score, FSA/HSA eligible, no doctor required."
+}

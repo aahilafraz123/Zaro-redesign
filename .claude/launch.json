@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "zaro-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3217,
+      "autoPort": true
+    },
+    {
+      "name": "zaro-static",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["-y", "serve@14", "out", "-n"],
+      "port": 3218,
+      "autoPort": true
+    }
+  ]
+}
