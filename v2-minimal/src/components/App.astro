@@ -1,0 +1,217 @@
+---
+const chapters = [
+  { k: "Your score", t: "One number for everything.", b: "Bloodwork, your wearable and a weekly check-in become a single score from 0 to 100, with how you compare to people your age." },
+  { k: "Your results", t: "Every marker, explained.", b: "No lab jargon. Each result shows where you sit in the range, what it means, and when to talk to a doctor." },
+  { k: "Your plan", t: "A plan that follows up.", b: "Daily actions tied to your own markers. Skip one, and Zaro asks why, then adjusts until it sticks." },
+];
+const results = [
+  { k: "ApoB", v: "82 mg/dL", x: 32, s: "Optimal" },
+  { k: "HbA1c", v: "5.4 %", x: 42, s: "Normal" },
+  { k: "Vitamin D", v: "24 ng/mL", x: 14, s: "Low", flag: true },
+  { k: "Testosterone", v: "612 ng/dL", x: 56, s: "Normal" },
+  { k: "hs-CRP", v: "0.6 mg/L", x: 24, s: "Optimal" },
+];
+---
+<section id="app" class="app section tight-end" aria-labelledby="app-title">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal>The app</p>
+    <h2 id="app-title" class="h-1" data-reveal style="--d:.05s">Your blood,<br /><span class="muted">in plain language.</span></h2>
+  </div>
+
+  <div class="wrap layout">
+    <div class="chapters">
+      {chapters.map((c, i) => (
+        <article class="chapter" data-screen={i}>
+          <p class="eyebrow">{c.k}</p>
+          <h3 class="h-2">{c.t}</h3>
+          <p class="lede">{c.b}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="phone-col">
+      <div class="phone-stage">
+        <div class="phone" data-phone>
+          <div class="island"></div>
+          <div class="screen is-on" data-screen-view="0">
+            <p class="s-k">Zaro Score</p>
+            <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="60" r="52" stroke="#e8e8ed" stroke-width="5" fill="none" />
+              <circle cx="60" cy="60" r="52" stroke="#1d1d1f" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="71.9" transform="rotate(-90 60 60)" />
+              <circle cx="8.9" cy="50.3" r="4.5" fill="#b5162b" stroke="#fff" stroke-width="2" />
+            </svg>
+            <p class="s-num mono">78</p>
+            <p class="s-band">Strong</p>
+            <div class="s-rows">
+              <p><span>Age group average</span><b class="mono">61</b></p>
+              <p><span>Biological age</span><b class="mono">33</b></p>
+              <p><span>Since last test</span><b class="mono">+4</b></p>
+            </div>
+          </div>
+          <div class="screen" data-screen-view="1">
+            <p class="s-k">Results</p>
+            <p class="s-title">97 markers</p>
+            <ul class="s-list">
+              {results.map((r) => (
+                <li>
+                  <div class="row"><span>{r.k}</span><span class={r.flag ? "red" : ""}>{r.s}</span></div>
+                  <div class="bar"><i style={`left:${r.x}%`} class={r.flag ? "flag" : ""} /></div>
+                  <div class="val mono">{r.v}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="screen" data-screen-view="2">
+            <p class="s-k">Today</p>
+            <p class="s-title">Three things.</p>
+            <ul class="s-todo">
+              <li class="done"><i></i>Vitamin D3, 5,000 IU</li>
+              <li class="done"><i></i>Walk after lunch</li>
+              <li><i></i>Omega-3 with dinner</li>
+            </ul>
+            <div class="s-msg">
+              <p class="mono">8:00 PM</p>
+              <p>Still on for omega-3 tonight?</p>
+              <div><span>Yes</span><span>Not yet</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
+  const section = document.querySelector<HTMLElement>(".app");
+  const phone = section?.querySelector<HTMLElement>("[data-phone]");
+  const views = [...(section?.querySelectorAll<HTMLElement>("[data-screen-view]") ?? [])];
+  const show = (i: number) => views.forEach((v) => v.classList.toggle("is-on", v.dataset.screenView === String(i)));
+
+  section?.querySelectorAll<HTMLElement>("[data-screen]").forEach((ch) => {
+    ScrollTrigger.create({
+      trigger: ch,
+      start: "top 60%",
+      end: "bottom 40%",
+      onToggle: (self) => {
+        ch.classList.toggle("is-active", self.isActive);
+        if (self.isActive) show(Number(ch.dataset.screen));
+      },
+    });
+  });
+
+  if (phone && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    gsap.fromTo(
+      phone,
+      { rotateY: -28, rotateX: 10, rotateZ: -4, scale: 0.86 },
+      {
+        rotateY: 0,
+        rotateX: 0,
+        rotateZ: 0,
+        scale: 1,
+        ease: "none",
+        scrollTrigger: { trigger: section, start: "top 85%", end: "top 10%", scrub: 0.8 },
+      },
+    );
+  }
+</script>
+
+<style>
+  .muted { color: var(--mute); }
+  .tight-end { padding-bottom: 24px; }
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 6vw, 96px);
+    margin-top: clamp(32px, 4vw, 48px);
+  }
+  .chapter {
+    min-height: 72vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0.25;
+    transition: opacity 0.6s var(--ease);
+  }
+  .chapter.is-active { opacity: 1; }
+  .chapter .lede { margin-top: 20px; max-width: 30ch; }
+  .phone-stage {
+    position: sticky;
+    top: calc(50vh - 330px);
+    perspective: 1600px;
+    display: flex;
+    justify-content: center;
+    padding-block: 20px;
+  }
+  .phone {
+    position: relative;
+    width: 300px;
+    height: 620px;
+    border-radius: 54px;
+    background: #fff;
+    border: 11px solid #111;
+    box-shadow:
+      0 0 0 2px #3a3a3c,
+      0 60px 120px -40px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    transform-style: preserve-3d;
+  }
+  .island {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    translate: -50% 0;
+    width: 92px;
+    height: 26px;
+    border-radius: 20px;
+    background: #000;
+    z-index: 2;
+  }
+  .screen {
+    position: absolute;
+    inset: 0;
+    padding: 64px 22px 24px;
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+    transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+    display: flex;
+    flex-direction: column;
+  }
+  .screen.is-on { opacity: 1; transform: none; }
+  .s-k { margin: 0; font-size: 13px; color: var(--mute); }
+  .s-title { margin: 4px 0 0; font-size: 26px; font-weight: 600; letter-spacing: -0.03em; }
+  .ring { width: 190px; margin: 28px auto 0; }
+  .s-num { margin: -132px 0 0; text-align: center; font-size: 56px; letter-spacing: -0.04em; line-height: 1; }
+  .s-band { margin: 6px 0 0; text-align: center; font-size: 13px; color: var(--mute); }
+  .s-rows { margin-top: 76px; border-top: 1px solid var(--line); }
+  .s-rows p { margin: 0; padding: 12px 0; display: flex; justify-content: space-between; font-size: 14px; border-bottom: 1px solid var(--line); }
+  .s-rows b { font-weight: 500; }
+  .s-list { list-style: none; margin: 18px 0 0; padding: 0; }
+  .s-list li { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .row { display: flex; justify-content: space-between; font-size: 14px; font-weight: 500; }
+  .bar { position: relative; height: 3px; background: #e8e8ed; border-radius: 3px; margin-top: 10px; }
+  .bar i { position: absolute; top: 50%; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); translate: -50% -50%; box-shadow: 0 0 0 3px #fff; }
+  .bar i.flag { background: var(--red); }
+  .val { margin-top: 6px; font-size: 11px; color: var(--mute); }
+  .s-todo { list-style: none; margin: 22px 0 0; padding: 0; }
+  .s-todo li { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .s-todo i { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid #d2d2d7; flex: none; }
+  .s-todo li.done { color: var(--mute); text-decoration: line-through; }
+  .s-todo li.done i { background: var(--ink); border-color: var(--ink); }
+  .s-msg { margin-top: auto; background: var(--paper); border-radius: 18px; padding: 14px; font-size: 14px; }
+  .s-msg p { margin: 0 0 4px; }
+  .s-msg .mono { font-size: 11px; color: var(--mute); }
+  .s-msg div { display: flex; gap: 8px; margin-top: 10px; }
+  .s-msg span { font-size: 13px; padding: 6px 14px; border-radius: 980px; background: #fff; border: 1px solid var(--line); }
+  .s-msg span:first-child { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+    .phone-col { order: -1; }
+    .phone-stage { position: relative; top: 0; }
+    .chapter { min-height: 0; padding-block: 28px; opacity: 1; }
+  }
+</style>

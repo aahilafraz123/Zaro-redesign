@@ -1,0 +1,57 @@
+---
+const total = 112;
+const physical = 15;
+---
+<section class="gap section" aria-labelledby="gap-title">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal>The blind spot</p>
+    <h2 id="gap-title" class="h-1" data-reveal style="--d:.05s">
+      A routine physical checks <span class="mono nowrap">12–15</span> markers.<br />
+      <span class="muted">Zaro checks up to <span class="mono">112</span>.</span>
+    </h2>
+    <div class="grid" data-dots aria-hidden="true">
+      {Array.from({ length: total }, (_, i) => <i class={i < physical ? "on base" : ""} />)}
+    </div>
+    <p class="counter mono" aria-hidden="true"><span data-count>15</span> markers</p>
+    <div class="legend" data-reveal>
+      <span><i class="on"></i>Typical annual physical</span>
+      <span><i class="full"></i>Zaro Source panel</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .muted { color: var(--mute); }
+  .nowrap { white-space: nowrap; }
+  .counter { margin: 24px 0 0; font-size: 15px; color: var(--ink); }
+  .grid {
+    margin-top: clamp(48px, 7vw, 88px);
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: clamp(8px, 1.4vw, 16px);
+    max-width: 760px;
+  }
+  .grid i {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #e8e8ed;
+    transition: background 0.5s var(--ease), transform 0.5s var(--ease);
+  }
+  .grid i.on { background: var(--ink); }
+  .grid i.last { background: var(--red); transform: scale(1.25); }
+  .legend {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    font-size: 14px;
+    color: var(--mute);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .legend i.on { background: var(--ink); }
+  .legend i.full { background: var(--ink); box-shadow: 14px 0 0 var(--ink), 28px 0 0 var(--ink); margin-right: 28px; }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: repeat(8, 1fr); }
+  }
+</style>

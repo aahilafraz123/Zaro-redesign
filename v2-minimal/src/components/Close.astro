@@ -1,0 +1,34 @@
+---
+const buy = "https://zarohealth.com/pricing";
+---
+<section class="close dark" aria-labelledby="close-title">
+  <div class="rule wrap" aria-hidden="true"></div>
+  <div class="wrap inner">
+    <svg class="drop" viewBox="0 0 40 52" aria-hidden="true" data-reveal>
+      <defs>
+        <radialGradient id="dg" cx="35%" cy="55%" r="70%">
+          <stop offset="0" stop-color="#e35a69" />
+          <stop offset=".45" stop-color="#b5162b" />
+          <stop offset="1" stop-color="#3a050c" />
+        </radialGradient>
+      </defs>
+      <path d="M20 1C14 12 3 22 3 33a17 17 0 0 0 34 0C37 22 26 12 20 1Z" fill="url(#dg)" />
+      <ellipse cx="13" cy="30" rx="2.6" ry="5" fill="#fff" opacity=".7" transform="rotate(-20 13 30)" />
+    </svg>
+    <h2 id="close-title" class="h-display" data-reveal style="--d:.06s">Start with<br />one drop.</h2>
+    <p class="lede" data-reveal style="--d:.12s">From $149. FSA and HSA eligible. Results in about a week.</p>
+    <div class="ctas" data-reveal style="--d:.18s">
+      <a href={buy} class="btn">Get started</a>
+      <a href="#tests" class="link">Compare tests</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .close { padding-block: clamp(96px, 12vw, 140px) clamp(120px, 18vw, 220px); text-align: center; }
+  .rule { height: 1px; background: var(--line-dark); margin-bottom: clamp(96px, 14vw, 180px); }
+  .inner { display: flex; flex-direction: column; align-items: center; }
+  .drop { width: 40px; height: 52px; margin-bottom: 40px; filter: drop-shadow(0 0 28px rgba(181, 22, 43, 0.55)); }
+  .lede { margin-top: 24px; }
+  .ctas { margin-top: 40px; display: flex; gap: 28px; align-items: center; }
+</style>

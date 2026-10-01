@@ -27,6 +27,15 @@ jobs:
       - run: npm run build
         env:
           GITHUB_PAGES: "true"
+      - name: Build minimal edition (Astro) into /minimal
+        working-directory: v2-minimal
+        run: |
+          npm ci
+          npm run build
+          mkdir -p ../out/minimal
+          cp -R dist/. ../out/minimal/
+        env:
+          GITHUB_PAGES: "true"
       - run: touch out/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

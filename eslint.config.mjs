@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Separate Astro build (minimal edition) has its own toolchain.
+    "v2-minimal/**",
   ]),
 ]);
 

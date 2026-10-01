@@ -1,0 +1,78 @@
+---
+const buy = "https://zarohealth.com/pricing";
+const tests = [
+  {
+    name: "Surface", q: "Has something already gone wrong?", price: 149, was: 199, markers: 65, systems: 8,
+    rows: ["Full metabolic panel and blood count", "HbA1c and fasting insulin", "Lipids, ApoB and hs-CRP", "Thyroid, vitamin D, ferritin"],
+  },
+  {
+    name: "Signal", q: "Is something developing?", price: 249, was: 299, markers: 97, systems: 10, pick: true,
+    rows: ["Everything in Surface", "Lp(a) and NMR particle testing", "Sex-specific hormones, cortisol", "Free T3 and T4, B12, iron"],
+  },
+  {
+    name: "Source", q: "What’s the root cause?", price: 399, was: 449, markers: 112, systems: 12,
+    rows: ["Everything in Signal", "Biological age and heart age", "Omega-3 and omega-6 profile", "Thyroid antibodies, fibrinogen"],
+  },
+];
+---
+<section id="tests" class="tests section" aria-labelledby="tests-title">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal>Tests</p>
+    <h2 id="tests-title" class="h-1" data-reveal style="--d:.05s">Three tests.<br /><span class="muted">Pick your depth.</span></h2>
+
+    <div class="cols">
+      {tests.map((t, i) => (
+        <article class={`col ${t.pick ? "pick" : ""}`} data-reveal style={`--d:${0.08 * i}s`}>
+          <p class="tag">{t.pick ? <><i></i>Most chosen</> : " "}</p>
+          <h3 class="h-2">{t.name}</h3>
+          <p class="q">{t.q}</p>
+          <p class="price">${t.price}<span class="was">${t.was}</span></p>
+          <a href={buy} class="btn">Get {t.name}</a>
+          <dl class="stats">
+            <div><dt>Markers</dt><dd class="mono">{t.markers}</dd></div>
+            <div><dt>Body systems</dt><dd class="mono">{t.systems}</dd></div>
+          </dl>
+          <ul>{t.rows.map((r) => <li class={r.startsWith("Everything") ? "inherit" : ""}>{r}</li>)}</ul>
+        </article>
+      ))}
+    </div>
+    <p class="fine" data-reveal>One-time price. One blood draw. Save $50 on every test through Nov 14, 2026.</p>
+  </div>
+</section>
+
+<style>
+  .muted { color: var(--mute); }
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: clamp(56px, 8vw, 96px);
+    border-top: 1px solid var(--line);
+  }
+  .col {
+    padding: 28px clamp(16px, 2.6vw, 36px) 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .col + .col { border-left: 1px solid var(--line); }
+  .tag { margin: 0 0 18px; min-height: 18px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+  .tag i { width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+  .q { margin: 10px 0 0; color: var(--mute); min-height: 2.9em; max-width: 24ch; text-wrap: balance; }
+  .price { margin: 28px 0 22px; font-size: 40px; font-weight: 600; letter-spacing: -0.03em; }
+  .was { margin-left: 10px; font-size: 17px; font-weight: 500; color: var(--mute); text-decoration: line-through; }
+  .stats { margin: 40px 0 0; width: 100%; display: grid; grid-template-columns: 1fr 1fr; border-block: 1px solid var(--line); }
+  .stats div { padding: 20px 0; }
+  .stats div + div { border-left: 1px solid var(--line); }
+  .stats dt { font-size: 12px; color: var(--mute); }
+  .stats dd { margin: 4px 0 0; font-size: 32px; letter-spacing: -0.03em; }
+  .col ul { list-style: none; padding: 0; margin: 24px 0 0; font-size: 15px; }
+  .col li { padding: 8px 0; color: var(--ink); }
+  .col li.inherit { color: var(--mute); }
+  .fine { margin: 56px 0 0; text-align: center; font-size: 14px; color: var(--mute); }
+  @media (max-width: 860px) {
+    .cols { grid-template-columns: 1fr; border-top: 0; }
+    .col { padding-block: 48px; border-top: 1px solid var(--line); }
+    .col + .col { border-left: 0; }
+  }
+</style>

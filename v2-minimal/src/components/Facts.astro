@@ -1,0 +1,27 @@
+---
+const facts = [
+  { t: "No doctor visit.", b: "Order directly. No referral, no insurance forms." },
+  { t: "FSA and HSA.", b: "Pay with pre-tax health dollars at checkout." },
+  { t: "Quest Diagnostics.", b: "CLIA-certified labs, the same ones your doctor uses." },
+  { t: "Yours alone.", b: "Encrypted. Never sold. Export or delete anytime." },
+];
+---
+<section class="facts section dark" aria-label="Why Zaro">
+  <div class="wrap">
+    <div class="grid">
+      {facts.map((f, i) => (
+        <div class="fact" data-reveal style={`--d:${0.06 * i}s`}>
+          <h3 class="h-2">{f.t}</h3>
+          <p class="lede">{f.b}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .facts { padding-bottom: 0; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(56px, 8vw, 112px) clamp(32px, 6vw, 96px); }
+  .fact .lede { margin-top: 14px; max-width: 26ch; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+</style>

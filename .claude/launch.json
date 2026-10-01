@@ -4,15 +4,35 @@
     {
       "name": "zaro-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3217,
       "autoPort": true
     },
     {
       "name": "zaro-static",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["-y", "serve@14", "out", "-n"],
+      "runtimeArgs": [
+        "-y",
+        "serve@14",
+        "out",
+        "-n"
+      ],
       "port": 3218,
+      "autoPort": true
+    },
+    {
+      "name": "zaro-minimal",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "-y",
+        "serve@14",
+        "v2-minimal/dist",
+        "-n"
+      ],
+      "port": 3219,
       "autoPort": true
     }
   ]

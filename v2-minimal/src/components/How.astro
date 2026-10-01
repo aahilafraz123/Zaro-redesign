@@ -1,0 +1,55 @@
+---
+const steps = [
+  { n: "01", t: "Order online.", b: "Pick a test, confirm there’s a Quest location near you, and pay with any card, including FSA or HSA. No doctor’s visit.", m: "About two minutes" },
+  { n: "02", t: "Give one sample.", b: "Walk into one of 2,250+ Quest Diagnostics centers with a photo ID. Fast for 8–10 hours beforehand.", m: "About ten minutes" },
+  { n: "03", t: "Read the results.", b: "Every marker lands in the Zaro app in plain language: what it is, what your number means, what to do next.", m: "5–7 business days" },
+];
+---
+<section id="how" class="how section paper" aria-labelledby="how-title">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal>How it works</p>
+    <h2 id="how-title" class="h-1" data-reveal style="--d:.05s">Three steps.<br /><span class="muted">About a week.</span></h2>
+    <ol class="steps">
+      {steps.map((s, i) => (
+        <li class="step" data-reveal style={`--d:${0.08 * i}s`}>
+          <span class="n mono">{s.n}</span>
+          <h3 class="h-3">{s.t}</h3>
+          <p>{s.b}</p>
+          <span class="m">{s.m}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .muted { color: var(--mute); }
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: clamp(48px, 7vw, 88px) 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .step {
+    background: var(--white);
+    border-radius: 28px;
+    padding: clamp(28px, 3vw, 40px);
+    display: flex;
+    flex-direction: column;
+    min-height: 360px;
+    transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease);
+  }
+  .step:hover { transform: translateY(-4px); box-shadow: 0 30px 60px -40px rgba(0,0,0,.35); }
+  .n { font-size: 14px; color: var(--mute); }
+  .step h3 { margin-top: 80px; }
+  .step p { margin: 12px 0 24px; color: var(--mute); font-size: 17px; }
+  .m { margin-top: auto; font-size: 14px; font-weight: 600; }
+  .step:first-child .m::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--red); margin-right: 8px; vertical-align: 1px; }
+  @media (max-width: 860px) {
+    .steps { grid-template-columns: 1fr; }
+    .step { min-height: 0; }
+    .step h3 { margin-top: 40px; }
+  }
+</style>
