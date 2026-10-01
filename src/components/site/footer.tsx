@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LINKS, SOCIAL } from "@/lib/content";
 import { Logo } from "./logo";
+import { asset } from "@/lib/utils";
 
 const COLS: { h: string; l: [string, string][] }[] = [
   {
@@ -27,7 +28,7 @@ const COLS: { h: string; l: [string, string][] }[] = [
       ["Terms of Service", "https://zarohealth.com/terms"],
       ["Privacy Policy", "https://zarohealth.com/privacy"],
       ["HIPAA Authorization", "https://zarohealth.com/hipaa-authorization"],
-      ["Contact", "https://zarohealth.com/contact"],
+      ["Contact", "/contact"],
     ],
   },
 ];
@@ -58,18 +59,20 @@ export function Footer() {
             <div className="mt-6 flex items-center gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/logos/app-qr-code.svg"
+                src={asset("/logos/app-qr-code.svg")}
                 alt="Scan to download the Zaro app"
                 width={104}
                 height={104}
                 className="rounded-xl border border-line"
               />
               <div className="flex flex-col gap-2">
-                <a href={LINKS.appStore} className="rounded-full bg-ink px-4 py-2.5 text-center text-[13px] font-semibold text-white transition-colors hover:bg-teal-night">
-                  App Store
+                <a href={LINKS.appStore} className="block transition-opacity hover:opacity-80">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={asset("/badges/app-store.svg")} alt="Download on the App Store" width={120} height={40} className="h-10 w-auto" />
                 </a>
-                <a href={LINKS.googlePlay} className="rounded-full border border-line px-4 py-2.5 text-center text-[13px] font-semibold text-ink transition-colors hover:border-ink/30">
-                  Google Play
+                <a href={LINKS.googlePlay} className="block transition-opacity hover:opacity-80">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={asset("/badges/google-play.png")} alt="Get it on Google Play" width={134} height={40} className="h-10 w-auto" />
                 </a>
               </div>
             </div>

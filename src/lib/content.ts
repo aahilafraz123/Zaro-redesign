@@ -16,6 +16,7 @@ export const NAV = [
   { label: "Journal", href: "/blog" },
   { label: "Dr. Rena Malik", href: "/dr-rena-malik" },
   { label: "FAQ", href: "/#faq" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const SOCIAL = [
