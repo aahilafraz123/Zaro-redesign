@@ -11,10 +11,19 @@ export const LINKS = {
 };
 
 export const NAV = [
-  { label: "How it works", href: "#how" },
-  { label: "Zaro Score", href: "#score" },
-  { label: "Panels", href: "#panels" },
-  { label: "FAQ", href: "#faq" },
+  { label: "How it works", href: "/#how" },
+  { label: "Panels", href: "/#panels" },
+  { label: "Journal", href: "/blog" },
+  { label: "Dr. Rena Malik", href: "/dr-rena-malik" },
+  { label: "FAQ", href: "/#faq" },
+];
+
+export const SOCIAL = [
+  { label: "Reddit", handle: "r/ZaroHealth", href: "https://www.reddit.com/r/ZaroHealth/" },
+  { label: "Instagram", handle: "@zarohealth26", href: "https://www.instagram.com/zarohealth26/" },
+  { label: "X", handle: "@ZaroHealth", href: "https://x.com/ZaroHealth" },
+  { label: "LinkedIn", handle: "Zaro Health", href: "https://www.linkedin.com/company/zarohealth" },
+  { label: "Facebook", handle: "Zaro Health", href: "https://www.facebook.com/profile.php?id=61576446315228" },
 ];
 
 export const STEPS = [
@@ -212,3 +221,115 @@ export const FAQ = [
     a: "If you haven’t had your blood drawn yet, you can request a refund within 30 days of purchase, minus a processing fee. Once a draw has happened, the lab costs are already incurred.",
   },
 ];
+
+export type Topic = "Testing basics" | "Heart" | "Cost & FSA/HSA" | "Inside Zaro";
+
+export type Post = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  topic: Topic;
+  cover: { glyph: string; caption: string; tone: "teal" | "night" | "sand" | "sage" | "mist" };
+  measuredIn?: "Surface" | "Signal" | "Source";
+};
+
+// Titles, dates and excerpts are Zaro’s own, from zarohealth.com/blog.
+export const POSTS: Post[] = [
+  {
+    slug: "inside-the-cascade-model",
+    title: "Inside the Cascade Model: How Zaro’s Three-Tier Testing Actually Works",
+    excerpt:
+      "Surface, Signal, and Source aren’t just price tiers. Each one answers a fundamentally different question about your health. Here’s how the cascade model works and why it matters.",
+    date: "2026-07-27",
+    topic: "Inside Zaro",
+    cover: { glyph: "3", caption: "questions, three depths", tone: "teal" },
+  },
+  {
+    slug: "how-often-should-you-get-blood-work",
+    title: "How Often Should You Actually Get Blood Work Done?",
+    excerpt:
+      "Annual physicals check a box, but they’re not built to catch change. Here’s how often to test, and why your Zaro Score adapts as you add more data.",
+    date: "2026-07-24",
+    topic: "Testing basics",
+    cover: { glyph: "3–6", caption: "months between panels", tone: "sand" },
+    measuredIn: "Surface",
+  },
+  {
+    slug: "what-is-lpa",
+    title: "What Is Lp(a)? The Genetic Cholesterol Risk Most Blood Tests Miss",
+    excerpt:
+      "One in five people carry a genetic cardiovascular risk factor that a standard lipid panel will never show them. Here’s what Lp(a) is and why it’s only tested once.",
+    date: "2026-07-21",
+    topic: "Heart",
+    cover: { glyph: "Lp(a)", caption: "1 in 5 people carry it", tone: "night" },
+    measuredIn: "Signal",
+  },
+  {
+    slug: "is-blood-testing-fsa-hsa-eligible",
+    title: "Is At-Home Blood Testing FSA/HSA Eligible?",
+    excerpt:
+      "Yes — here’s exactly how to use your FSA or HSA card to pay for a Zaro panel, and why testing like this qualifies as an eligible medical expense.",
+    date: "2026-07-18",
+    topic: "Cost & FSA/HSA",
+    cover: { glyph: "FSA/HSA", caption: "eligible at checkout", tone: "mist" },
+  },
+  {
+    slug: "why-regular-blood-testing-matters",
+    title: "Why Regular Blood Testing Matters More Than Your Annual Physical",
+    excerpt:
+      "A once-a-year snapshot misses the trend. Here’s why quarterly testing catches problems while they’re still reversible, not after they become diagnoses.",
+    date: "2026-07-15",
+    topic: "Testing basics",
+    cover: { glyph: "12–15", caption: "markers in a typical physical", tone: "sage" },
+    measuredIn: "Surface",
+  },
+];
+
+export const postUrl = (slug: string) => `https://zarohealth.com/blog/${slug}`;
+
+// Dr. Rena Malik: public facts from renamalikmd.com (see research/social-plan.md).
+export const RENA = {
+  name: "Dr. Rena Malik",
+  headshot: "https://renamalikmd.com/wp-content/uploads/2026/04/Rena-Headshot-67-2mb-scaled.jpg",
+  title: "Board-certified urologist and pelvic surgeon",
+  stats: [
+    { k: "550M+", v: "views on YouTube" },
+    { k: "3M", v: "followers across platforms" },
+    { k: "Top 10", v: "Health Influencer, Men’s Health" },
+  ],
+  heardOn: ["Huberman Lab", "The Diary of a CEO", "The Mel Robbins Podcast", "Shawn Ryan Show"],
+  training: [
+    { k: "Medical school", v: "NYU School of Medicine" },
+    { k: "Residency", v: "University of Chicago" },
+    { k: "Fellowship", v: "UT Southwestern Medical Center" },
+    { k: "Board certification", v: "American Board of Urology" },
+  ],
+  honors: ["Men’s Health Top 10 Health Influencer", "GQ Top Wellness Creator Award"],
+  videos: [
+    { id: "oELGc7bSgS8", title: "A Urologist Explains 11 Signs of Low Testosterone Most Men Overlook" },
+    { id: "SEHq1uz5Va8", title: "The Ultimate Guide to Testosterone" },
+    { id: "ugHdMW2adYI", title: "Scientifically Proven Ways to Boost Your Testosterone Naturally" },
+  ],
+  channels: [
+    { label: "YouTube", href: "https://www.youtube.com/@RenaMalikMD" },
+    { label: "Instagram", href: "https://www.instagram.com/RenaMalikMD/" },
+    { label: "TikTok", href: "https://www.tiktok.com/@renamalikmd" },
+    { label: "Website", href: "https://renamalikmd.com/" },
+  ],
+};
+
+export const HORMONE_MAP = {
+  "For men": [
+    { signal: "Low energy, low drive, slower recovery", markers: "Total, free and bioavailable testosterone, SHBG", panel: "Signal" },
+    { signal: "Feeling run down under stress", markers: "DHEA-S and morning cortisol", panel: "Signal" },
+    { signal: "Weight creeping up, energy crashes", markers: "HbA1c, fasting insulin", panel: "Surface" },
+    { signal: "Cold, sluggish, foggy", markers: "TSH, free T3, free T4", panel: "Signal" },
+  ],
+  "For women": [
+    { signal: "Cycle changes, hot flashes, poor sleep", markers: "Estradiol, LH, FSH, progesterone", panel: "Signal" },
+    { signal: "Feeling run down under stress", markers: "Morning cortisol", panel: "Signal" },
+    { signal: "Fatigue, hair thinning", markers: "Ferritin, full iron panel", panel: "Signal" },
+    { signal: "Cold, sluggish, foggy", markers: "TSH, free T3, free T4, thyroid antibodies", panel: "Source" },
+  ],
+} as const;

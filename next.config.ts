@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   output: "export",
   basePath: isPages ? "/Zaro-redesign" : undefined,
   images: { unoptimized: true },
+  trailingSlash: true,
 };
 
 export default nextConfig;

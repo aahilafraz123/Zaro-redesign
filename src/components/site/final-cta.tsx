@@ -7,7 +7,6 @@ import { useGSAP } from "@gsap/react";
 import { ArrowRight } from "lucide-react";
 import BlurText from "@/components/BlurText";
 import { LINKS } from "@/lib/content";
-import { Logo } from "./logo";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -65,76 +64,5 @@ export function FinalCta() {
         </div>
       </div>
     </section>
-  );
-}
-
-const COLS = [
-  {
-    h: "Product",
-    l: [
-      ["Our tests", "https://zarohealth.com/our-tests"],
-      ["How it works", "https://zarohealth.com/how-it-works"],
-      ["Pricing", "https://zarohealth.com/pricing"],
-    ],
-  },
-  {
-    h: "Company",
-    l: [
-      ["About", "https://zarohealth.com/about"],
-      ["Blog", "https://zarohealth.com/blog"],
-      ["FAQ", "https://zarohealth.com/faq"],
-      ["Contact", "https://zarohealth.com/contact"],
-    ],
-  },
-  {
-    h: "Legal",
-    l: [
-      ["Terms of Service", "https://zarohealth.com/terms"],
-      ["Privacy Policy", "https://zarohealth.com/privacy"],
-      ["HIPAA Authorization", "https://zarohealth.com/hipaa-authorization"],
-    ],
-  },
-];
-
-export function Footer() {
-  return (
-    <footer className="bg-white pt-20 pb-10">
-      <div className="mx-auto max-w-6xl px-5">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div>
-            <Logo className="h-6" />
-            <p className="mt-5 max-w-xs text-[15px] leading-relaxed text-ink-2">
-              Preventive health intelligence for everyone. Know your body before it tells you something is wrong.
-            </p>
-            <div className="mt-6 flex gap-2">
-              <a href={LINKS.appStore} className="rounded-full bg-ink px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-teal-night">
-                App Store
-              </a>
-              <a href={LINKS.googlePlay} className="rounded-full border border-line px-4 py-2.5 text-[13px] font-semibold text-ink transition-colors hover:border-ink/30">
-                Google Play
-              </a>
-            </div>
-          </div>
-          {COLS.map((c) => (
-            <div key={c.h}>
-              <p className="font-mono text-[11px] tracking-[0.16em] text-ink-3 uppercase">{c.h}</p>
-              <ul className="mt-4 space-y-2.5">
-                {c.l.map(([t, href]) => (
-                  <li key={t}>
-                    <a href={href} className="text-[15px] text-ink-2 transition-colors hover:text-ink">
-                      {t}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="mt-16 flex flex-col gap-3 border-t border-line pt-6 text-[13px] text-ink-3 md:flex-row md:items-center md:justify-between">
-          <p>© 2026 Zaro Health, Inc. All rights reserved.</p>
-          <p>FSA/HSA eligible · Quest Diagnostics · Labcorp & BioReference coming soon</p>
-        </div>
-      </div>
-    </footer>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "./logo";
@@ -12,6 +14,8 @@ export function Nav() {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) => !href.includes("#") && pathname.replace(/\/$/, "") === href;
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
@@ -32,19 +36,23 @@ export function Nav() {
           scrolled || open ? "glass" : "border border-transparent bg-transparent",
         )}
       >
-        <a href="#top" aria-label="Zaro Health, back to top" className="shrink-0">
+        <Link href="/" aria-label="Zaro Health home" className="shrink-0">
           <Logo className="h-[22px]" />
-        </a>
+        </Link>
 
-        <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex">
+        <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-0.5 lg:flex">
           {NAV.map((item) => (
             <li key={item.href}>
-              <a
+              <Link
                 href={item.href}
-                className="rounded-full px-4 py-2 text-[14px] font-medium text-ink-2 transition-colors hover:bg-ink/[0.04] hover:text-ink"
+                aria-current={isActive(item.href) ? "page" : undefined}
+                className={cn(
+                  "rounded-full px-3.5 py-2 text-[14px] font-medium whitespace-nowrap transition-colors hover:bg-ink/[0.04] hover:text-ink",
+                  isActive(item.href) ? "bg-ink/[0.05] text-ink" : "text-ink-2",
+                )}
               >
                 {item.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -62,7 +70,7 @@ export function Nav() {
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="grid size-10 place-items-center rounded-full text-ink md:hidden"
+            className="grid size-10 place-items-center rounded-full text-ink lg:hidden"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -76,17 +84,17 @@ export function Nav() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="glass absolute inset-x-0 top-[calc(100%+8px)] rounded-3xl p-3 md:hidden"
+              className="glass absolute inset-x-0 top-[calc(100%+8px)] rounded-3xl p-3 lg:hidden"
             >
               {NAV.map((item) => (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
                   className="block rounded-2xl px-4 py-3 text-[16px] font-medium text-ink"
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
               <a
                 href={LINKS.getStarted}
