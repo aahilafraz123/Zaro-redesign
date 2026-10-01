@@ -7,7 +7,7 @@ import { DailyPlan } from "@/components/site/daily-plan";
 import { Panels } from "@/components/site/panels";
 import { TwoPaths } from "@/components/site/two-paths";
 import { Wearables } from "@/components/site/wearables";
-import { Fsa } from "@/components/site/fsa";
+import { Value } from "@/components/site/value";
 import { Trust } from "@/components/site/trust";
 import { Faq } from "@/components/site/faq";
 import { FinalCta, Footer } from "@/components/site/final-cta";
@@ -27,7 +27,7 @@ export default function Home() {
         <Panels />
         <TwoPaths />
         <Wearables />
-        <Fsa />
+        <Value />
         <Trust />
         <Faq />
         <FinalCta />
