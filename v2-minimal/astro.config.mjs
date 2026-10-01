@@ -7,5 +7,5 @@ const isPages = process.env.GITHUB_PAGES === 'true';
 export default defineConfig({
   site: 'https://aahilafraz123.github.io',
   base: isPages ? '/Zaro-redesign/minimal' : '/',
-  trailingSlash: 'ignore',
+  trailingSlash: 'always',
 });

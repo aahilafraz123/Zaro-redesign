@@ -1,0 +1,53 @@
+---
+interface Props { glyph: string; caption: string; topic: string; tone?: "black" | "paper" | "white"; size?: "md" | "lg"; class?: string }
+const { glyph, caption, topic, tone = "black", size = "md", class: cls = "" } = Astro.props;
+---
+<div class={`cover ${tone} ${size} ${cls}`} aria-hidden="true">
+  <span class="ring r1"></span>
+  <span class="ring r2"></span>
+  <span class="topic">{topic}</span>
+  <span class="glyph">{glyph}</span>
+  <span class="cap">{caption}</span>
+</div>
+
+<style>
+  .cover {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(22px, 3vw, 36px);
+    aspect-ratio: 16 / 10;
+  }
+  .black { background: #000; color: #f5f5f7; }
+  .paper { background: var(--paper); color: var(--ink); }
+  .white { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+  .ring { position: absolute; border-radius: 50%; border: 1px solid color-mix(in srgb, currentColor 16%, transparent); }
+  .r1 { width: 70%; aspect-ratio: 1; right: -18%; top: -38%; }
+  .r2 { width: 40%; aspect-ratio: 1; right: -4%; top: -14%; }
+  .r2::after {
+    content: "";
+    position: absolute;
+    left: 6%;
+    bottom: 12%;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+  .ring.r2 { border-color: color-mix(in srgb, currentColor 24%, transparent); }
+  .topic { position: absolute; top: clamp(20px, 2.6vw, 32px); left: clamp(22px, 3vw, 36px); font-size: 12px; font-weight: 600; opacity: 0.6; }
+  .glyph {
+    font-size: clamp(56px, 7vw, 96px);
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    transition: transform 0.8s var(--ease);
+  }
+  .lg .glyph { font-size: clamp(88px, 13vw, 180px); }
+  .cap { margin-top: 10px; font-family: var(--mono); font-size: 12px; opacity: 0.6; }
+  :global(a:hover) > .cover .glyph,
+  :global(.card:hover) .cover .glyph { transform: translateY(-4px); }
+</style>

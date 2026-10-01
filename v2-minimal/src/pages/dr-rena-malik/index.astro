@@ -1,0 +1,233 @@
+---
+import Base from "../../layouts/Base.astro";
+import VideoCard from "../../components/VideoCard.astro";
+import { HORMONES, RENA } from "../../lib/rena";
+import { BUY, url } from "../../lib/site";
+
+const groups = Object.entries(HORMONES);
+---
+<Base title="Dr. Rena Malik · Zaro" description="Zaro is partnering with Dr. Rena Malik, board-certified urologist, to help more people understand their hormones through their own blood.">
+  <main>
+    <section class="hero dark" aria-labelledby="rm-title">
+      <div class="wrap grid">
+        <div class="copy">
+          <p class="eyebrow" data-reveal>Partnership</p>
+          <h1 id="rm-title" class="h-display" data-reveal style="--d:.05s">Zaro ×<br /><span class="dim">Dr. Rena Malik.</span></h1>
+          <p class="lede" data-reveal style="--d:.1s">
+            One of the most-followed doctors on the internet is partnering with Zaro, so more people can see what’s
+            really happening with their hormones, in their own blood, without a referral.
+          </p>
+          <div class="ctas" data-reveal style="--d:.15s">
+            <a href="#hormones" class="btn">See what Zaro measures</a>
+            <a href="#watch" class="link">Watch her guides</a>
+          </div>
+        </div>
+        <figure class="portrait" data-reveal style="--d:.1s">
+          <img src={RENA.headshot} alt={`${RENA.name}, ${RENA.title}`} fetchpriority="high" data-parallax />
+          <figcaption>
+            <span class="dot" aria-hidden="true"></span>{RENA.name}<span class="sub">{RENA.title}</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="reach dark" aria-label="Reach">
+      <div class="wrap">
+        <dl class="stats">
+          {RENA.stats.map((s, i) => (
+            <div data-reveal style={`--d:${0.06 * i}s`}><dt>{s.v}</dt><dd>{s.k}</dd></div>
+          ))}
+        </dl>
+        <p class="heard" data-reveal>
+          <span>Heard on</span>
+          {RENA.heardOn.map((h) => <b>{h}</b>)}
+        </p>
+      </div>
+    </section>
+
+    <section class="statement section" aria-label="Why hormones">
+      <div class="wrap">
+        <p class="h-1" data-reveal>
+          Low energy. Low drive. Poor sleep. Brain fog.<br />
+          <span class="muted">They get waved off as stress or age. Many of the clues are measurable in a single blood draw.</span>
+        </p>
+      </div>
+    </section>
+
+    <section id="hormones" class="map section paper" aria-labelledby="map-title">
+      <div class="wrap">
+        <p class="eyebrow" data-reveal>What she talks about. What Zaro measures.</p>
+        <h2 id="map-title" class="h-1" data-reveal style="--d:.05s">From the symptom<br /><span class="muted">to the number.</span></h2>
+        <div class="tabs" role="tablist" aria-label="Choose" data-reveal>
+          {groups.map(([k], i) => (
+            <button type="button" role="tab" id={`tab-${k}`} aria-controls={`panel-${k}`} aria-selected={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1}>For {k.toLowerCase()}</button>
+          ))}
+        </div>
+        {groups.map(([k, rows], i) => (
+          <ul class="rows" role="tabpanel" id={`panel-${k}`} aria-labelledby={`tab-${k}`} hidden={i !== 0}>
+            {rows.map((r) => (
+              <li>
+                <span class="s">{r.s}</span>
+                <span class="m">{r.m}</span>
+                <span class={`p ${r.p === "Surface" ? "" : "on"}`}>{r.p}</span>
+              </li>
+            ))}
+          </ul>
+        ))}
+        <p class="note">Symptoms have many causes. Zaro shows you your numbers in plain language; talk to your doctor about what they mean for you.</p>
+      </div>
+    </section>
+
+    <section id="watch" class="watch section" aria-labelledby="watch-title">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <p class="eyebrow" data-reveal>Watch</p>
+            <h2 id="watch-title" class="h-1" data-reveal style="--d:.05s">Testosterone,<br /><span class="muted">explained.</span></h2>
+          </div>
+          <a href={RENA.channels[0].href} class="link" data-reveal>Her YouTube channel</a>
+        </div>
+        <div class="vids">
+          {RENA.videos.map((v, i) => (
+            <div data-reveal style={`--d:${0.06 * i}s`}><VideoCard id={v.id} title={v.title} /></div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="about section paper" aria-labelledby="about-title">
+      <div class="wrap two">
+        <div>
+          <p class="eyebrow" data-reveal>About Dr. Malik</p>
+          <h2 id="about-title" class="h-2" data-reveal style="--d:.05s">A surgeon who talks like a person.</h2>
+          <p class="lede" data-reveal style="--d:.1s">
+            Board-certified urologist and pelvic surgeon specializing in sexual medicine, hormones and bladder health,
+            known for evidence-based, straight-talking education on the topics most people are too embarrassed to ask
+            their doctor about.
+          </p>
+          <ul class="channels" data-reveal style="--d:.15s">
+            {RENA.channels.map((c) => <li><a href={c.href} class="chip">{c.label}</a></li>)}
+          </ul>
+        </div>
+        <dl class="cv" data-reveal style="--d:.1s">
+          {RENA.training.map((t) => <div><dt>{t.k}</dt><dd>{t.v}</dd></div>)}
+        </dl>
+      </div>
+    </section>
+
+    <section class="close dark" aria-labelledby="close-rm">
+      <div class="wrap inner">
+        <h2 id="close-rm" class="h-display" data-reveal>Start with<br />your hormones.</h2>
+        <p class="lede" data-reveal style="--d:.08s">Signal includes sex-specific hormones, morning cortisol, free T3 and T4, and everything in Surface. One draw. Results in about a week.</p>
+        <div class="ctas" data-reveal style="--d:.14s">
+          <a href={BUY} class="btn">Get Signal for $249</a>
+          <a href={url("#tests")} class="link">Compare tests</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Tabs (arrow keys move between them, per the ARIA tabs pattern).
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+  const select = (t: HTMLButtonElement) => {
+    tabs.forEach((x) => {
+      const on = x === t;
+      x.setAttribute("aria-selected", String(on));
+      x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute("aria-controls")!)!.hidden = !on;
+    });
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => select(t));
+    t.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      const n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      select(n);
+      n.focus();
+    });
+  });
+
+  // Slow parallax on the portrait.
+  const img = document.querySelector<HTMLElement>("[data-parallax]");
+  if (img && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    gsap.fromTo(img, { scale: 1.12, yPercent: -4 }, { scale: 1, yPercent: 4, ease: "none", scrollTrigger: { trigger: img, start: "top bottom", end: "bottom top", scrub: true } });
+  }
+</script>
+
+<style>
+  .muted { color: var(--mute); }
+  .dim { color: #86868b; }
+  .hero { padding: clamp(110px, 13vw, 160px) 0 clamp(64px, 8vw, 104px); }
+  .grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(32px, 6vw, 88px); align-items: center; }
+  .hero .lede { margin-top: 28px; max-width: 32ch; }
+  .ctas { margin-top: 36px; display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+  .portrait { margin: 0; position: relative; border-radius: 32px; overflow: hidden; aspect-ratio: 4 / 5; background: #111; }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: grayscale(1) contrast(1.06); transition: filter 1.2s var(--ease); }
+  .portrait:hover img { filter: grayscale(0.15) contrast(1.02); }
+  .portrait figcaption {
+    position: absolute; left: 16px; right: 16px; bottom: 16px; padding: 14px 16px; border-radius: 18px;
+    background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    font-size: 15px; font-weight: 600; color: #f5f5f7; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;
+  }
+  .portrait .sub { width: 100%; font-weight: 400; font-size: 13px; color: #a1a1a6; padding-left: 15px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
+
+  .reach { padding-bottom: clamp(64px, 8vw, 104px); }
+  .stats { margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line-dark); }
+  .stats div { padding: 32px 0 0; display: flex; flex-direction: column-reverse; gap: 6px; }
+  .stats div + div { padding-left: clamp(16px, 3vw, 40px); border-left: 1px solid var(--line-dark); }
+  .stats dt { font-size: 15px; color: #a1a1a6; }
+  .stats dd { margin: 0; font-size: clamp(40px, 5vw, 64px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
+  .heard { margin: 56px 0 0; display: flex; flex-wrap: wrap; gap: 10px 28px; align-items: baseline; font-size: clamp(18px, 2vw, 24px); }
+  .heard span { font-size: 13px; color: #86868b; }
+  .heard b { font-weight: 600; letter-spacing: -0.02em; }
+
+  .statement .h-1 { font-size: clamp(32px, 4.6vw, 64px); max-width: 22ch; }
+
+  .tabs { margin-top: 48px; display: inline-flex; padding: 4px; border-radius: 980px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); }
+  .tabs button { font: inherit; font-size: 15px; font-weight: 500; border: 0; background: transparent; color: var(--ink); padding: 10px 22px; border-radius: 980px; cursor: pointer; transition: background .3s, color .3s; }
+  .tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
+  .rows { list-style: none; padding: 0; margin: 24px 0 0; background: #fff; border-radius: 28px; overflow: hidden; }
+  .rows li { display: grid; grid-template-columns: 1.2fr 1.4fr auto; gap: 24px; align-items: center; padding: 24px clamp(20px, 3vw, 36px); }
+  .rows li + li { border-top: 1px solid var(--line); }
+  .rows .s { font-size: clamp(18px, 1.8vw, 22px); font-weight: 600; letter-spacing: -0.02em; }
+  .rows .m { color: var(--mute); }
+  .rows .p { font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 980px; background: var(--paper); }
+  .rows .p.on { background: var(--ink); color: #fff; }
+  .note { margin: 20px 0 0; font-size: 13px; color: var(--mute); max-width: 70ch; }
+
+  .watch .head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+  .vids { margin-top: 48px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  .two { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(32px, 6vw, 96px); }
+  .about .lede { margin-top: 20px; }
+  .channels { list-style: none; padding: 0; margin: 28px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-block; padding: 8px 16px; border-radius: 980px; background: #fff; font-size: 14px; font-weight: 500; box-shadow: inset 0 0 0 1px var(--line); transition: background .3s, color .3s; }
+  .chip:hover { background: var(--ink); color: #fff; }
+  .cv { margin: 0; background: #fff; border-radius: 28px; overflow: hidden; }
+  .cv div { display: grid; grid-template-columns: 170px 1fr; gap: 12px; padding: 22px 28px; }
+  .cv div + div { border-top: 1px solid var(--line); }
+  .cv dt { font-size: 13px; color: var(--mute); padding-top: 2px; }
+  .cv dd { margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+
+  .close { padding-block: clamp(120px, 16vw, 200px); text-align: center; }
+  .close .inner { display: flex; flex-direction: column; align-items: center; }
+  .close .lede { margin-top: 24px; max-width: 40ch; }
+  .close .ctas { justify-content: center; }
+
+  @media (max-width: 860px) {
+    .grid, .two { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .stats div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--line-dark); margin-top: 24px; }
+    .rows li { grid-template-columns: 1fr; gap: 8px; }
+    .rows .p { justify-self: start; }
+    .vids { grid-template-columns: 1fr; }
+    .cv div { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>

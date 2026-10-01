@@ -28,7 +28,7 @@ const io = new IntersectionObserver(
 document.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
 
 // Nav follows the section underneath it: dark on black sections, light on white ones.
-const sections = [...document.querySelectorAll<HTMLElement>("main > section")];
+const sections = [...document.querySelectorAll<HTMLElement>("main > *, body > footer")];
 const setNav = () => {
   const under = sections.find((s) => {
     const r = s.getBoundingClientRect();

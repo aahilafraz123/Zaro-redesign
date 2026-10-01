@@ -56,8 +56,8 @@ const files = readdirSync(stills).filter((f) => f.endsWith(".jpg")).sort();
 files.forEach((f, i) => {
   const n = String(i + 1).padStart(4, "0");
   const src = join(stills, f);
-  execFileSync("cwebp", ["-quiet", "-q", "74", "-resize", "1600", "0", src, "-o", join(outDir, `d-${n}.webp`)]);
-  execFileSync("cwebp", ["-quiet", "-q", "66", "-resize", "900", "0", src, "-o", join(outDir, `m-${n}.webp`)]);
+  execFileSync("cwebp", ["-quiet", "-q", "70", "-resize", "1600", "0", src, "-o", join(outDir, `d-${n}.webp`)]);
+  execFileSync("cwebp", ["-quiet", "-q", "62", "-resize", "900", "0", src, "-o", join(outDir, `m-${n}.webp`)]);
 });
 
 writeFileSync(

@@ -1,0 +1,127 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Cover from "../../components/Cover.astro";
+import { BUY, fmtDate, url } from "../../lib/site";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("journal")).sort((a, b) => +b.data.date - +a.data.date);
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[i - 1] ?? null, older: posts[i + 1] ?? null },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const words = post.body?.split(/\s+/).length ?? 0;
+const minutes = Math.max(1, Math.round(words / 230));
+const disclaimer =
+  d.disclaimer ??
+  "This article is for educational purposes and is not a substitute for professional medical advice. Always talk to a physician about your specific results and health history.";
+---
+<Base title={`${d.title} · Zaro Journal`} description={d.excerpt}>
+  <main>
+    <article>
+      <header class="head">
+        <div class="wrap narrow">
+          <p class="crumbs"><a href={url("journal/")}>Journal</a><span>·</span>{d.topic}</p>
+          <h1 class="title">{d.title}</h1>
+          <p class="lede">{d.excerpt}</p>
+          <p class="byline">
+            <span class="dot" aria-hidden="true"></span>
+            {d.reviewer ? (
+              <>Medically reviewed by <strong>{d.reviewer}</strong><span>, board-certified physician (ABFM)</span></>
+            ) : (
+              <>By the <strong>Zaro team</strong> · draft, pending medical review</>
+            )}
+            <span class="sep">·</span>{fmtDate(d.date)}<span class="sep">·</span>{minutes} min read
+          </p>
+        </div>
+      </header>
+
+      <div class="wrap wide">
+        <Cover glyph={d.glyph} caption={d.caption} topic={d.topic} size="lg" class="hero-cover" />
+      </div>
+
+      <div class="wrap narrow body">
+        <Content />
+
+        {d.measuredIn && (
+          <aside class="measured">
+            <p class="eyebrow">Measured in {d.measuredIn}</p>
+            <p>The markers in this article are included in Zaro’s {d.measuredIn} test. One draw at Quest, results in 5–7 days.</p>
+            <div class="row">
+              <a href={BUY} class="btn">Get {d.measuredIn}</a>
+              <a href={url("#tests")} class="link">Compare tests</a>
+            </div>
+          </aside>
+        )}
+
+        <p class="disclaimer">{disclaimer}</p>
+      </div>
+    </article>
+
+    <nav class="more" aria-label="More articles">
+      <div class="wrap">
+        <div class="pager">
+          {older ? (
+            <a href={url(`journal/${older.id}/`)} class="pg">
+              <span class="k">Previous</span><span class="t">{older.data.title}</span>
+            </a>
+          ) : <span />}
+          {newer ? (
+            <a href={url(`journal/${newer.id}/`)} class="pg right">
+              <span class="k">Next</span><span class="t">{newer.data.title}</span>
+            </a>
+          ) : <span />}
+        </div>
+        <a href={url("journal/")} class="link back">All articles</a>
+      </div>
+    </nav>
+  </main>
+</Base>
+
+<style>
+  .head { padding: clamp(120px, 14vw, 180px) 0 clamp(40px, 5vw, 64px); background: #fff; }
+  .narrow { width: min(100% - var(--gutter) * 2, 720px); margin-inline: auto; }
+  .wide { width: min(100% - var(--gutter) * 2, 1120px); margin-inline: auto; }
+  .crumbs { margin: 0 0 20px; font-size: 14px; font-weight: 600; color: var(--mute); display: flex; gap: 8px; }
+  .crumbs a { color: var(--ink); }
+  .crumbs a:hover { text-decoration: underline; }
+  .title { margin: 0; font-size: clamp(36px, 5.2vw, 64px); line-height: 1.06; font-weight: 600; letter-spacing: -0.04em; text-wrap: balance; }
+  .head .lede { margin-top: 22px; }
+  .byline { margin: 28px 0 0; font-size: 14px; color: var(--mute); display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; }
+  .byline strong + span { margin-left: -6px; }
+  .byline strong { color: var(--ink); font-weight: 600; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); margin-right: 4px; }
+  .sep { opacity: 0.5; }
+  .wide :global(.hero-cover) { border-radius: 28px; aspect-ratio: 21 / 9; }
+  .body { padding: clamp(48px, 6vw, 80px) 0 clamp(80px, 10vw, 120px); font-size: 19px; line-height: 1.6; letter-spacing: -0.012em; }
+  .body :global(p) { margin: 0 0 1.2em; color: #333336; }
+  .body :global(h2) { margin: 2em 0 0.6em; font-size: clamp(24px, 2.4vw, 30px); line-height: 1.2; font-weight: 600; letter-spacing: -0.025em; color: var(--ink); }
+  .body :global(a) { color: var(--ink); text-decoration: underline; text-decoration-color: var(--red); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+  .body :global(> p:first-child)::first-letter { font-size: 1.05em; }
+  .measured { margin: 56px 0 40px; padding: 28px; border-radius: 24px; background: var(--paper); }
+  .measured p { font-size: 17px; }
+  .measured .eyebrow { color: var(--ink); }
+  .measured .eyebrow::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--red); margin-right: 8px; vertical-align: 2px; }
+  .measured .row { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+  .measured .btn { text-decoration: none; color: #fff; }
+  .measured .link { text-decoration: none; }
+  .disclaimer { font-size: 13px !important; line-height: 1.5; color: var(--mute) !important; border-top: 1px solid var(--line); padding-top: 20px; }
+  .more { background: var(--paper); padding: 56px 0 72px; }
+  .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .pg { background: #fff; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 8px; transition: transform .5s var(--ease); }
+  .pg:hover { transform: translateY(-3px); }
+  .pg.right { text-align: right; }
+  .pg .k { font-size: 13px; color: var(--mute); }
+  .pg .t { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; }
+  .back { margin-top: 28px; }
+  @media (max-width: 720px) {
+    .pager { grid-template-columns: 1fr; }
+    .pg.right { text-align: left; }
+    .wide :global(.hero-cover) { aspect-ratio: 16 / 10; }
+  }
+</style>

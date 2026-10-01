@@ -75,11 +75,27 @@ async function frameSource(base: string): Promise<Source | null> {
         ctx.fillStyle = "#000";
         ctx.fillRect(0, 0, w, h);
         if (!img) return;
-        // cover-fit
-        const s = Math.max(w / img.naturalWidth, h / img.naturalHeight);
-        const iw = img.naturalWidth * s;
-        const ih = img.naturalHeight * s;
-        ctx.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
+        // Landscape: cover the screen. Portrait phones: fit wider than the screen but keep the
+        // whole ring in view, then fade the frame's top and bottom edges into the black page.
+        const nw = img.naturalWidth;
+        const nh = img.naturalHeight;
+        const portrait = h > w;
+        const s = portrait ? Math.max((w / nw) * 1.35, (h / nh) * 0.5) : Math.max(w / nw, h / nh);
+        const iw = nw * s;
+        const ih = nh * s;
+        const x = (w - iw) / 2;
+        const y = (h - ih) / 2;
+        ctx.drawImage(img, x, y, iw, ih);
+        if (portrait && ih < h) {
+          const edge = ih * 0.22;
+          for (const [y0, y1] of [[y, y + edge], [y + ih, y + ih - edge]]) {
+            const g = ctx.createLinearGradient(0, y0, 0, y1);
+            g.addColorStop(0, "#000");
+            g.addColorStop(1, "rgba(0,0,0,0)");
+            ctx.fillStyle = g;
+            ctx.fillRect(0, Math.min(y0, y1), w, edge);
+          }
+        }
       },
     };
   } catch {

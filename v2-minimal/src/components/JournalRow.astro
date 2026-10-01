@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import Cover from "./Cover.astro";
+import { fmtDate, url } from "../lib/site";
+
+const posts = (await getCollection("journal")).sort((a, b) => +b.data.date - +a.data.date).slice(0, 3);
+const tones = ["black", "paper", "black"] as const;
+---
+<section class="jr section" aria-labelledby="jr-title">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <p class="eyebrow" data-reveal>Journal</p>
+        <h2 id="jr-title" class="h-1" data-reveal style="--d:.05s">Learn before<br /><span class="muted">you test.</span></h2>
+      </div>
+      <a href={url("journal/")} class="link" data-reveal>All articles</a>
+    </div>
+    <ul class="grid">
+      {posts.map((p, i) => (
+        <li data-reveal style={`--d:${0.06 * i}s`}>
+          <a href={url(`journal/${p.id}/`)} class="card">
+            <Cover glyph={p.data.glyph} caption={p.data.caption} topic={p.data.topic} tone={tones[i]} />
+            <p class="meta">{fmtDate(p.data.date)}</p>
+            <h3 class="h-3">{p.data.title}</h3>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .muted { color: var(--mute); }
+  .head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+  .grid { list-style: none; padding: 0; margin: 48px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { display: block; border-radius: 24px; overflow: hidden; }
+  .card :global(.cover) { border-radius: 24px; }
+  .meta { margin: 18px 0 0; font-size: 13px; color: var(--mute); }
+  .h-3 { margin-top: 8px; font-size: clamp(19px, 1.6vw, 22px); }
+  .card:hover .h-3 { text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: 4px; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+</style>

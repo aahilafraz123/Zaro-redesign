@@ -44,3 +44,4 @@ research/shots/
 research/*.png
 .playwright-mcp/
 .claude/settings.local.json
+research/higgsfield/

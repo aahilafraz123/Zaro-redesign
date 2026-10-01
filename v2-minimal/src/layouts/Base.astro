@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Wordmark from "../components/Wordmark.astro";
+import { url } from "../lib/site";
 
 interface Props { title?: string; description?: string }
 const {
@@ -9,6 +10,7 @@ const {
 } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 const buy = "https://zarohealth.com/pricing";
+const path = Astro.url.pathname;
 ---
 <!doctype html>
 <html lang="en">
@@ -28,9 +30,10 @@ const buy = "https://zarohealth.com/pricing";
       <nav class="nav-inner wrap" aria-label="Main">
         <a href={base} class="nav-logo" aria-label="Zaro home"><Wordmark class="nav-mark" /></a>
         <ul class="nav-links">
-          <li><a href="#how">How it works</a></li>
-          <li><a href="#app">The app</a></li>
-          <li><a href="#tests">Tests</a></li>
+          <li><a href={url("#how")}>How it works</a></li>
+          <li><a href={url("#tests")}>Tests</a></li>
+          <li><a href={url("journal/")} aria-current={path.startsWith(url("journal/")) ? "page" : undefined}>Journal</a></li>
+          <li><a href={url("dr-rena-malik/")} aria-current={path.startsWith(url("dr-rena-malik/")) ? "page" : undefined}>Dr. Rena Malik</a></li>
         </ul>
         <a href={buy} class="nav-buy">Get started</a>
       </nav>
@@ -49,12 +52,18 @@ const buy = "https://zarohealth.com/pricing";
           <ul>
             <li><a href="https://zarohealth.com/privacy">Privacy</a></li>
             <li><a href="https://zarohealth.com/terms">Terms</a></li>
+            <li><a href={url("journal/")}>Journal</a></li>
+            <li><a href={url("dr-rena-malik/")}>Dr. Rena Malik</a></li>
             <li><a href="https://zarohealth.com/faq">FAQ</a></li>
             <li><a href="https://zarohealth.com/contact">Contact</a></li>
           </ul>
         </div>
       </div>
     </footer>
+
+    <script>
+      import "../scripts/motion";
+    </script>
 
     <style>
       .nav {
@@ -92,6 +101,7 @@ const buy = "https://zarohealth.com/pricing";
         letter-spacing: 0;
       }
       .nav-links a { opacity: 0.8; transition: opacity 0.2s; }
+      .nav-links a[aria-current="page"] { opacity: 1; font-weight: 600; }
       .nav-links a:hover { opacity: 1; }
       .nav-buy {
         font-size: 12px;
@@ -103,8 +113,9 @@ const buy = "https://zarohealth.com/pricing";
         transition: background 0.4s var(--ease), color 0.4s var(--ease);
       }
       :global(body.on-light) .nav-buy { background: var(--ink); color: #fff; }
-      @media (max-width: 640px) {
-        .nav-links { display: none; }
+      @media (max-width: 760px) {
+        .nav-links { gap: 18px; }
+        .nav-links li:nth-child(-n + 2) { display: none; }
       }
 
       .foot {

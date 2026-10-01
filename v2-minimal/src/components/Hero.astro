@@ -6,12 +6,12 @@ const systems = ["Heart.", "Hormones.", "Metabolism.", "Thyroid.", "Nutrients."]
   <div class="stage">
     <canvas class="canvas" aria-hidden="true"></canvas>
 
-    <div class="beat beat-top" data-beat="0,0.16">
+    <div class="beat beat-open" data-beat="0,0.16">
       <h1 class="h-display">Know your blood.</h1>
       <p class="lede">Every answer starts with a single drop.</p>
     </div>
 
-    <div class="beat beat-center" data-beat="0.2,0.36">
+    <div class="beat beat-bottom" data-beat="0.2,0.36">
       <p class="h-1">Over 100 markers.<br /><span class="dim">One draw.</span></p>
     </div>
 
@@ -63,6 +63,7 @@ const systems = ["Heart.", "Hormones.", "Metabolism.", "Thyroid.", "Nutrients."]
   }
   .beat {
     position: absolute;
+    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.65);
     left: 50%;
     width: min(100% - var(--gutter) * 2, 980px);
     margin: 0;
@@ -76,6 +77,15 @@ const systems = ["Heart.", "Hormones.", "Metabolism.", "Thyroid.", "Nutrients."]
   }
   .beat-top .lede {
     margin-top: 18px;
+  }
+  .beat-open {
+    bottom: clamp(64px, 11vh, 120px);
+  }
+  .beat-open .h-display {
+    font-size: clamp(48px, 7.4vw, 104px);
+  }
+  .beat-open .lede {
+    margin-top: 14px;
   }
   .beat-bottom {
     bottom: clamp(48px, 9vh, 96px);
@@ -131,7 +141,7 @@ const systems = ["Heart.", "Hormones.", "Metabolism.", "Thyroid.", "Nutrients."]
     gap: 28px;
   }
   .cue {
-    bottom: 32px;
+    bottom: 24px;
     font-size: 12px;
     color: #86868b;
     letter-spacing: 0.08em;
