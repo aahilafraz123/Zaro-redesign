@@ -36,6 +36,7 @@ async function frameSource(base: string): Promise<Source | null> {
     const res = await fetch(`${base}frames/hero/manifest.json`);
     if (!res.ok) return null;
     const m = (await res.json()) as Manifest;
+    if (!m.count) return null; // no footage yet: keep the drawn version
     const small = window.matchMedia("(max-width: 820px)").matches && m.mobilePattern;
     const pattern = small ? m.mobilePattern! : m.pattern;
     const url = (i: number) => `${base}frames/hero/${pattern.replace("%04d", String(i + 1).padStart(4, "0"))}`;
