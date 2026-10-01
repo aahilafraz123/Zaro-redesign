@@ -10,7 +10,10 @@ gsap.registerPlugin(ScrollTrigger);
  * Scroll progress (0..1) picks the frame; nothing animates on its own.
  */
 
-type Source = { draw: (ctx: CanvasRenderingContext2D, w: number, h: number, p: number) => void };
+type Source = {
+  draw: (ctx: CanvasRenderingContext2D, w: number, h: number, p: number) => void;
+  onFrame?: () => void;
+};
 
 type Manifest = { count: number; pattern: string; width: number; height: number; mobilePattern?: string };
 
@@ -41,25 +44,33 @@ async function frameSource(base: string): Promise<Source | null> {
     const pattern = small ? m.mobilePattern! : m.pattern;
     const url = (i: number) => `${base}frames/hero/${pattern.replace("%04d", String(i + 1).padStart(4, "0"))}`;
     const frames: (HTMLImageElement | null)[] = new Array(m.count).fill(null);
+    let onFrame: () => void = () => {};
 
-    const load = (i: number) =>
-      new Promise<void>((resolve) => {
-        const img = new Image();
-        img.decoding = "async";
-        img.onload = () => {
-          frames[i] = img;
-          resolve();
-        };
-        img.onerror = () => resolve();
-        img.src = url(i);
-      });
+    // Decode before use, so drawing a frame never stalls the scroll on image decoding.
+    const load = async (i: number) => {
+      if (frames[i]) return;
+      const img = new Image();
+      img.src = url(i);
+      try {
+        await img.decode();
+        frames[i] = img;
+        onFrame();
+      } catch {
+        /* skip a frame that fails; neighbours cover it */
+      }
+    };
 
-    // First frames now, the rest in the background (every 4th first, then fill in).
+    // Coarse to fine: every 8th frame first so the whole scroll is usable fast, then fill in.
+    const order: number[] = [];
+    const seen = new Set<number>();
+    for (const step of [8, 4, 2, 1])
+      for (let i = 0; i < m.count; i += step) if (!seen.has(i)) (seen.add(i), order.push(i));
+    const queue = order.slice();
+    const worker = async () => {
+      while (queue.length) await load(queue.shift()!);
+    };
     await Promise.all([0, 1, 2, 3].map(load));
-    (async () => {
-      for (const step of [4, 2, 1])
-        for (let i = 0; i < m.count; i += step) if (!frames[i]) await load(i);
-    })();
+    Promise.all(Array.from({ length: 8 }, worker));
 
     const nearest = (i: number) => {
       for (let d = 0; d < m.count; d++) {
@@ -69,35 +80,44 @@ async function frameSource(base: string): Promise<Source | null> {
       return null;
     };
 
+    // Geometry is the same for every frame, so compute it once per canvas size.
+    let geo = { w: 0, h: 0, x: 0, y: 0, iw: 0, ih: 0, portrait: false };
+    const layout = (w: number, h: number, nw: number, nh: number) => {
+      if (geo.w === w && geo.h === h) return geo;
+      const portrait = h > w;
+      // Landscape: cover the screen. Portrait phones: keep the whole ring in view.
+      const s = portrait ? Math.max((w / nw) * 1.35, (h / nh) * 0.5) : Math.max(w / nw, h / nh);
+      const iw = nw * s;
+      const ih = nh * s;
+      geo = { w, h, x: (w - iw) / 2, y: (h - ih) / 2, iw, ih, portrait };
+      return geo;
+    };
+
     return {
+      set onFrame(fn: () => void) {
+        onFrame = fn;
+      },
       draw(ctx, w, h, p) {
-        const img = nearest(Math.round(p * (m.count - 1)));
+        // One frame per source frame of footage, so no blending is needed (blending ghosts fast motion).
+        const i0 = Math.round(p * (m.count - 1));
+        const a = frames[i0] ?? nearest(i0);
         ctx.fillStyle = "#000";
         ctx.fillRect(0, 0, w, h);
-        if (!img) return;
-        // Landscape: cover the screen. Portrait phones: fit wider than the screen but keep the
-        // whole ring in view, then fade the frame's top and bottom edges into the black page.
-        const nw = img.naturalWidth;
-        const nh = img.naturalHeight;
-        const portrait = h > w;
-        const s = portrait ? Math.max((w / nw) * 1.35, (h / nh) * 0.5) : Math.max(w / nw, h / nh);
-        const iw = nw * s;
-        const ih = nh * s;
-        const x = (w - iw) / 2;
-        const y = (h - ih) / 2;
-        ctx.drawImage(img, x, y, iw, ih);
-        if (portrait && ih < h) {
-          const edge = ih * 0.22;
-          for (const [y0, y1] of [[y, y + edge], [y + ih, y + ih - edge]]) {
-            const g = ctx.createLinearGradient(0, y0, 0, y1);
-            g.addColorStop(0, "#000");
-            g.addColorStop(1, "rgba(0,0,0,0)");
-            ctx.fillStyle = g;
+        if (!a) return;
+        const g = layout(w, h, a.naturalWidth, a.naturalHeight);
+        ctx.drawImage(a, g.x, g.y, g.iw, g.ih);
+        if (g.portrait && g.ih < h) {
+          const edge = g.ih * 0.22;
+          for (const [y0, y1] of [[g.y, g.y + edge], [g.y + g.ih, g.y + g.ih - edge]]) {
+            const grad = ctx.createLinearGradient(0, y0, 0, y1);
+            grad.addColorStop(0, "#000");
+            grad.addColorStop(1, "rgba(0,0,0,0)");
+            ctx.fillStyle = grad;
             ctx.fillRect(0, Math.min(y0, y1), w, edge);
           }
         }
       },
-    };
+    } as Source;
   } catch {
     return null;
   }
@@ -297,7 +317,18 @@ export async function initHero(section: HTMLElement) {
     render();
   };
 
+  let queued = false;
+  const schedule = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      render();
+    });
+  };
+
   const render = () => {
+    ctx.imageSmoothingQuality = "high";
     source.draw(ctx, w, h, progress);
     for (const b of beats) {
       const [a, z] = b.dataset.beat!.split(",").map(Number);
@@ -317,8 +348,10 @@ export async function initHero(section: HTMLElement) {
   frameSource(base).then((s) => {
     if (s) {
       source = s;
+      // Repaint when a frame that is on screen finishes loading.
+      s.onFrame = schedule;
       section.dataset.source = "frames";
-      render();
+      schedule();
     }
   });
 
@@ -332,10 +365,9 @@ export async function initHero(section: HTMLElement) {
     trigger: section,
     start: "top top",
     end: "bottom bottom",
-    scrub: 0.6,
     onUpdate: (self) => {
       progress = self.progress;
-      requestAnimationFrame(render);
+      schedule();
     },
   });
 }
