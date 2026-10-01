@@ -1,18 +1,13 @@
-import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { getLenis } from "./lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // Smooth scroll, driven by GSAP's ticker so ScrollTrigger stays in sync.
-if (!reduce) {
-  const lenis = new Lenis({ lerp: 0.13, anchors: { offset: -48 } });
-  lenis.on("scroll", ScrollTrigger.update);
-  gsap.ticker.add((t) => lenis.raf(t * 1000));
-  gsap.ticker.lagSmoothing(0);
-}
+getLenis();
 
 // Reveal on enter.
 const io = new IntersectionObserver(
