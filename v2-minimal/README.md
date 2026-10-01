@@ -9,20 +9,22 @@ It shares nothing with the main Next.js build in the repo root.
 
 ## Hero: staged footage
 
-The hero is three scenes (the drop, inside the blood, the score ring). One scroll gesture moves one
-step; each transition is a short video clip played forward or reversed at a fixed speed, and the middle
-scene runs a seamless ambient loop (`src/scripts/hero.ts`). Footage was generated with Higgsfield
-(Kling 3.0 Pro) and upscaled to 4K with Topaz.
+The hero plays as one film: the first scroll runs the drop diving into the blood and the cells gathering
+into the score ring without stopping, then the page glides on into the next section
+(`src/scripts/hero.ts`). Scrolling again mid-film hurries it; afterwards the hero is a normal section
+resting on the score, and scrolling up past the top rewinds the film to the drop. The next section arrives black and brightens
+to white as it scrolls in, with the hero's bottom edge fading to match.
+Footage was generated with Higgsfield (Kling 3.0 Pro) and upscaled to 4K with Topaz.
 
-To rebuild the media from new clips:
+To rebuild the media from the 4K masters:
 
 ```bash
 npm install
-node scripts/make-hero-video.mjs drop-to-cells.mp4 cells-to-ring.mp4 cells-loop.mp4
+node scripts/make-hero-video.mjs drop-to-cells-4k.mp4 cells-to-ring-4k.mp4
 ```
 
-This writes `public/hero/`: forward and reversed transitions at 2560 and 1280 wide, the loop, and a
-still for each scene (used as posters and for reduced motion).
+This writes `public/hero/`: the two transitions, forward and reversed, at 2560 and 1280 wide, plus the opening and
+closing stills at 3840 and 1920 wide. Add `--stills-only` to redo just the stills.
 
 ## Develop
 

@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Cover from "./Cover.astro";
-import { fmtDate, url } from "../lib/site";
+import { coverProps, fmtDate, url } from "../lib/site";
 
 const posts = (await getCollection("journal")).sort((a, b) => +b.data.date - +a.data.date).slice(0, 3);
 const tones = ["black", "paper", "black"] as const;
@@ -19,7 +19,7 @@ const tones = ["black", "paper", "black"] as const;
       {posts.map((p, i) => (
         <li data-reveal style={`--d:${0.06 * i}s`}>
           <a href={url(`journal/${p.id}/`)} class="card">
-            <Cover glyph={p.data.glyph} caption={p.data.caption} topic={p.data.topic} tone={tones[i]} />
+            <Cover {...coverProps(p.data)} tone={tones[i]} sizes="(max-width: 860px) 100vw, 380px" />
             <p class="meta">{fmtDate(p.data.date)}</p>
             <h3 class="h-3">{p.data.title}</h3>
           </a>

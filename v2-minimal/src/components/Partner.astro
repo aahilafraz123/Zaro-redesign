@@ -22,8 +22,8 @@ import { url } from "../lib/site";
   .partner { padding-block: clamp(72px, 10vw, 140px); }
   .band { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
   .photo { border-radius: 28px; overflow: hidden; aspect-ratio: 4 / 5; background: #111; }
-  .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: grayscale(1) contrast(1.06); transform: scale(1.02); transition: filter 1s var(--ease), transform 1.2s var(--ease); }
-  .band:hover .photo img { filter: grayscale(0.1); transform: scale(1.05); }
+  .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: contrast(1.04) saturate(1.05); transform: scale(1.02); transition: filter 1s var(--ease), transform 1.2s var(--ease); }
+  .band:hover .photo img { filter: contrast(1.04) saturate(1.1); transform: scale(1.05); }
   .eyebrow { display: inline-flex; align-items: center; gap: 8px; }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
   .dim { color: #86868b; }

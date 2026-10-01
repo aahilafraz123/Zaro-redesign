@@ -5,6 +5,9 @@ date: 2026-07-27
 topic: "Inside Zaro"
 glyph: "3"
 caption: "questions, three depths"
+cover: "./images/inside-the-cascade-model.jpg"
+coverAlt: "A drop of blood falling through three stacked panes of glass, growing more vivid at each layer."
+coverFocus: "80% 50%"
 reviewer: "Rajesh, MD"
 ---
 

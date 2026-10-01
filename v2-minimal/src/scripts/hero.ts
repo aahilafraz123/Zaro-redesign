@@ -1,19 +1,22 @@
 import { getLenis } from "./lenis";
 
 /*
- * Staged hero. Three scenes, one scroll gesture between each:
- *   s0  the drop (still, gently floating)
- *   s1  inside the blood (an ambient loop, always moving)
- *   s2  the score ring (still, with a slow glow)
- * Transitions are real video clips played at a fixed speed, forward or reversed, so the motion is
- * identical every time instead of following the scroll wheel. After s2, the next scroll releases
- * the page; scrolling back to the top re-enters the hero at s2.
+ * Hero intro, played in one go. The page opens on the drop (s0). The first scroll plays the whole
+ * film without stopping: the drop dives into the blood (t1), the cells gather into the score ring (t2),
+ * the score lands (s2), and the page glides on into the next section. Another scroll mid-film hurries
+ * it along. After that the hero is an ordinary section resting on the score, and scrolling up past the
+ * top rewinds the film back to the drop, ready to play again.
  */
 
-type Clip = "t1" | "t1r" | "loop" | "t2" | "t2r";
-type State = "s0" | "t1" | "s1" | "t2" | "s2";
+type Clip = "t1" | "t2" | "t1r" | "t2r";
+type State = "s0" | "t1" | "t2" | "s2" | "rewind";
 
-const GESTURE_GAP = 220; // ms of wheel silence that ends one gesture (absorbs trackpad inertia)
+const RATE = 1.25; // clip speed for the intro
+const REWIND = 1.8; // clip speed for the rewind, which is a quick way home rather than a story
+const HURRY = 2.4; // clip speed once the reader scrolls again mid-film
+const HOLD_S2 = 450; // ms for the score to land before the page moves on
+const HOLD_HURRIED = 150;
+const GESTURE_GAP = 250; // ms of wheel silence that ends one gesture (absorbs trackpad inertia)
 
 export function initHero(section: HTMLElement) {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -26,20 +29,11 @@ export function initHero(section: HTMLElement) {
   const vids = {} as Record<Clip, HTMLVideoElement>;
   section.querySelectorAll<HTMLVideoElement>("video[data-layer]").forEach((v) => (vids[v.dataset.layer as Clip] = v));
   const beats = [...section.querySelectorAll<HTMLElement>("[data-on]")];
-  const dots = [...section.querySelectorAll<HTMLElement>("[data-dot]")];
-
-  let state: State = "s0";
-  let busy = false;
-  let released = window.scrollY > 4 || !!location.hash;
 
   const setState = (s: State) => {
-    state = s;
     section.dataset.state = s;
     beats.forEach((b) => b.classList.toggle("show", b.dataset.on!.split(" ").includes(s)));
-    const stage = s === "s0" || s === "t1" ? 0 : s === "s1" ? 1 : 2;
-    dots.forEach((d, i) => d.classList.toggle("on", i === stage));
   };
-
   const show = (name: string) => layers.forEach((el, k) => el.classList.toggle("on", k === name));
 
   if (reduce) {
@@ -48,8 +42,8 @@ export function initHero(section: HTMLElement) {
     return;
   }
 
-  // Load the first transition now, the rest once the page is idle.
-  (Object.keys(vids) as Clip[]).forEach((name, i) => {
+  // Load the first clip straight away, the rest once the page is idle.
+  (["t1", "t2", "t2r", "t1r"] as Clip[]).forEach((name, i) => {
     const v = vids[name];
     const attach = () => {
       v.src = src(name);
@@ -64,183 +58,228 @@ export function initHero(section: HTMLElement) {
     v.readyState >= 3
       ? Promise.resolve()
       : new Promise<void>((res) => {
-          const done = () => res();
-          v.addEventListener("canplay", done, { once: true });
-          setTimeout(done, 2500);
+          v.addEventListener("canplay", () => res(), { once: true });
+          setTimeout(res, 2500);
         });
 
-  // Resolve once the first frame of playback is actually on screen, so layer swaps never flash black.
-  // Falls back to a short timeout: hidden tabs never paint, and a stage must never get stuck.
+  // Resolve once the clip's first frame is on screen, so layer swaps never flash black.
   const painted = (v: HTMLVideoElement) =>
     new Promise<void>((res) => {
       setTimeout(res, 300);
-      if ("requestVideoFrameCallback" in v) v.requestVideoFrameCallback(() => res());
+      if (typeof v.requestVideoFrameCallback === "function") v.requestVideoFrameCallback(() => res());
       else v.addEventListener("playing", () => res(), { once: true });
     });
 
   const finished = (v: HTMLVideoElement) =>
     new Promise<void>((res) => {
       v.addEventListener("ended", () => res(), { once: true });
-      const ms = Number.isFinite(v.duration) ? v.duration * 1000 + 600 : 4000;
-      setTimeout(res, ms);
+      // Hidden tabs may never fire `ended`; the film must never get stuck.
+      setTimeout(res, (v.duration / v.playbackRate) * 1000 + 600);
     });
+
+  // intro: resting on the drop, waiting for the first scroll. playing / rewinding: the film owns the
+  // page. done: the hero is an ordinary section resting on the score.
+  type Phase = "intro" | "playing" | "rewinding" | "done";
+  let phase: Phase = "intro";
+  let speed = RATE;
+  let hurry = false;
+  let current: HTMLVideoElement | null = null;
+  let wake: (() => void) | null = null;
+  const filming = () => phase === "playing" || phase === "rewinding";
+
+  const hold = (ms: number) =>
+    new Promise<void>((res) => {
+      const t = setTimeout(done, hurry ? HOLD_HURRIED : ms);
+      function done() {
+        clearTimeout(t);
+        wake = null;
+        res();
+      }
+      wake = done;
+    });
+
+  const speedUp = () => {
+    if (hurry) return;
+    hurry = true;
+    if (current) current.playbackRate = HURRY;
+    const w = wake;
+    if (w) setTimeout(w, HOLD_HURRIED);
+  };
 
   const play = async (name: Clip) => {
     const v = vids[name];
     await ready(v);
+    if (v.readyState < 2 || !filming()) return; // clip unavailable: the caller crossfades to the next still
     v.currentTime = 0;
+    v.playbackRate = hurry ? HURRY : speed;
+    current = v;
     const frame = painted(v);
     await v.play().catch(() => {});
     await frame;
+    if (!filming()) return;
     show(name);
-    if (!v.loop) await finished(v);
+    await finished(v);
+    current = null;
   };
 
-  const startLoop = async () => {
-    const v = vids.loop;
-    if (v.error) return show("s1"); // loop missing or broken: hold on the still of this scene
-    await ready(v);
-    if (v.readyState < 2) return show("s1");
-    v.currentTime = 0;
-    const frame = painted(v);
-    await v.play().catch(() => {});
-    await frame;
-    show("loop");
+  const lenis = () => getLenis();
+
+  const lock = () => lenis()?.stop();
+
+  const release = (scroll: boolean) => {
+    phase = "done";
+    const l = lenis();
+    l?.start();
+    if (!scroll) return;
+    // The section after the hero (Astro leaves the hero's own <script> tag in between).
+    let next = section.nextElementSibling as HTMLElement | null;
+    while (next && (next.tagName === "SCRIPT" || next.tagName === "STYLE")) next = next.nextElementSibling as HTMLElement | null;
+    if (!next) return;
+    const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    if (l) l.scrollTo(next, { duration: 1.6, easing: easeInOut });
+    else next.scrollIntoView({ behavior: "smooth" });
   };
 
-  const lock = () => {
-    released = false;
-    getLenis()?.stop();
+  const intro = async () => {
+    if (phase !== "intro") return;
+    phase = "playing";
+    speed = RATE;
+    hurry = false;
+    setState("t1");
+    await play("t1");
+    if (phase !== "playing") return;
+    // Straight on: t1 holds its last frame (the first frame of t2) until t2 is on screen.
+    setState("t2");
+    await play("t2");
+    if (phase !== "playing") return;
+    show("s2");
+    setState("s2");
+    await hold(HOLD_S2);
+    if (phase !== "playing") return;
+    release(true);
   };
 
-  const release = (scroll = true) => {
-    released = true;
-    const lenis = getLenis();
-    lenis?.start();
-    if (scroll) {
-      const next = section.nextElementSibling as HTMLElement | null;
-      if (lenis && next) lenis.scrollTo(next, { offset: -48, duration: 1.1 });
-      else next?.scrollIntoView({ behavior: "smooth" });
-    }
+  // Back at the top and still scrolling up: run the film backwards to the drop.
+  const rewind = async () => {
+    if (phase !== "done") return;
+    phase = "rewinding";
+    speed = REWIND;
+    hurry = false;
+    lock();
+    setState("rewind");
+    await play("t2r");
+    if (phase !== "rewinding") return;
+    await play("t1r");
+    if (phase !== "rewinding") return;
+    show("s0");
+    setState("s0");
+    phase = "intro";
   };
 
-  const step = async (dir: 1 | -1) => {
-    if (busy) return;
-    busy = true;
-    try {
-      if (dir > 0) {
-        if (state === "s0") {
-          setState("t1");
-          await play("t1");
-          await startLoop();
-          setState("s1");
-        } else if (state === "s1") {
-          setState("t2");
-          await play("t2");
-          vids.loop.pause();
-          setState("s2");
-        } else if (state === "s2") {
-          release();
-        }
-      } else {
-        if (state === "s2") {
-          setState("t2");
-          await play("t2r");
-          await startLoop();
-          setState("s1");
-        } else if (state === "s1") {
-          setState("t1");
-          await play("t1r");
-          vids.loop.pause();
-          show("s0");
-          setState("s0");
-        }
-      }
-    } finally {
-      busy = false;
-    }
+  // Jump straight to the end of the story (nav links, Skip intro, a restored scroll position).
+  const skip = () => {
+    if (phase === "done") return;
+    phase = "done";
+    Object.values(vids).forEach((v) => v.pause());
+    wake?.();
+    show("s2");
+    setState("s2");
+    release(false);
   };
 
-  // ----- Input: one gesture = one step -----
+  // ----- Input -----
+  // intro: a scroll down starts the film. playing / rewinding: the page is held; a fresh scroll hurries
+  // the film. done: scrolling is the page's own, except scrolling up at the very top, which rewinds.
+  const atTop = () => window.scrollY <= 2;
+
   let lastWheel = 0;
-  let usedGesture = false;
-
   window.addEventListener(
     "wheel",
     (e) => {
       const now = performance.now();
-      const newGesture = now - lastWheel > GESTURE_GAP;
+      const fresh = now - lastWheel > GESTURE_GAP;
       lastWheel = now;
-      if (newGesture) usedGesture = false;
-
-      if (released) {
-        // Back at the very top and scrolling up: re-enter the hero at the score.
-        if (window.scrollY <= 2 && e.deltaY < 0 && newGesture) {
+      if (phase === "done") {
+        if (e.deltaY < -2 && atTop()) {
           e.preventDefault();
-          lock();
-          usedGesture = true;
+          rewind();
         }
         return;
       }
-
       e.preventDefault();
-      if (usedGesture || busy || Math.abs(e.deltaY) < 3) return;
-      usedGesture = true;
-      step(e.deltaY > 0 ? 1 : -1);
+      // Any downward movement starts the film: trackpad swipes open with tiny deltas, so waiting for a
+      // big first event (or a fresh gesture) would swallow the whole swipe.
+      if (phase === "intro" && e.deltaY > 0) intro();
+      else if (filming() && fresh) speedUp();
     },
     { passive: false },
   );
 
   let touchY: number | null = null;
-  window.addEventListener("touchstart", (e) => (touchY = e.touches[0].clientY), { passive: true });
   window.addEventListener(
-    "touchmove",
+    "touchstart",
     (e) => {
-      if (!released) e.preventDefault();
+      touchY = e.touches[0].clientY;
+      if (filming()) speedUp();
     },
-    { passive: false },
+    { passive: true },
   );
+  window.addEventListener("touchmove", (e) => phase !== "done" && e.preventDefault(), { passive: false });
   window.addEventListener("touchend", (e) => {
     if (touchY === null) return;
     const dy = touchY - e.changedTouches[0].clientY;
     touchY = null;
-    if (Math.abs(dy) < 36) return;
-    if (released) {
-      if (window.scrollY <= 2 && dy < 0) lock();
-      return;
-    }
-    step(dy > 0 ? 1 : -1);
+    if (phase === "intro" && dy > 30) intro();
+    else if (phase === "done" && dy < -30 && atTop()) rewind();
   });
 
   window.addEventListener("keydown", (e) => {
-    if (released || e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-    const down = ["ArrowDown", "PageDown"].includes(e.key) || (e.key === " " && !e.shiftKey);
-    const up = ["ArrowUp", "PageUp"].includes(e.key) || (e.key === " " && e.shiftKey);
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+    const down = ["ArrowDown", "PageDown", "End"].includes(e.key) || (e.key === " " && !e.shiftKey);
+    const up = ["ArrowUp", "PageUp", "Home"].includes(e.key) || (e.key === " " && e.shiftKey);
     if (!down && !up) return;
+    if (phase === "done") {
+      if (up && atTop()) {
+        e.preventDefault();
+        rewind();
+      }
+      return;
+    }
     e.preventDefault();
-    step(down ? 1 : -1);
+    if (phase === "intro" && down) intro();
+    else if (filming()) speedUp();
   });
 
-  // Any in-page link (nav, "See how it works", skip) releases the hero first.
+  // Any in-page link (nav, "See how it works", Skip intro) ends the film and lets the link scroll.
   window.addEventListener(
     "click",
     (e) => {
       const a = (e.target as HTMLElement).closest<HTMLAnchorElement>("a[href*='#']");
-      if (!a || released) return;
+      if (!a || phase === "done") return;
       const id = a.hash.slice(1);
-      if (!id || id === "top" || !document.getElementById(id)) return;
-      if (state !== "s2") {
-        vids.loop.pause();
-        show("s2");
-        setState("s2");
-      }
-      release(false);
+      if (id && id !== "top" && document.getElementById(id)) skip();
     },
     true,
   );
 
+  // The browser restored a scroll position after load: don't trap the reader mid-page.
+  window.addEventListener("scroll", () => phase === "intro" && window.scrollY > 4 && skip(), { passive: true });
+
   // ----- Start -----
-  setState(released ? "s2" : "s0");
-  show(released ? "s2" : "s0");
-  if (!released) lock();
+  // Opened mid-page, or from a link to a section further down: rest on the score; scrolling up to the
+  // top can rewind it. A hash left over from an earlier click doesn't count on a reload or back/forward,
+  // where the browser restores the old scroll position instead (the scroll listener above catches that).
+  const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+  const revisit = nav?.type === "reload" || nav?.type === "back_forward";
+  const linked = !revisit && location.hash ? document.getElementById(location.hash.slice(1)) : null;
+  if (window.scrollY > 4 || (linked && linked !== section)) {
+    phase = "done";
+    setState("s2");
+    show("s2");
+    return;
+  }
+  if (location.hash) history.replaceState(history.state, "", location.pathname + location.search);
+  setState("s0");
+  show("s0");
+  lock();
 }

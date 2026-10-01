@@ -20,10 +20,37 @@ const physical = 15;
   </div>
 </section>
 
+<script>
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  // Dawn: the section arrives black, continuing the hero, and turns white as it rises into view.
+  const gap = document.querySelector<HTMLElement>(".gap");
+  if (gap && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    // Set on the root so the hero's bottom edge can fade to the very same colour: no seam between them.
+    const root = document.documentElement;
+    const paint = (p: number) => root.style.setProperty("--dawn", (p * p * (3 - 2 * p)).toFixed(3));
+    ScrollTrigger.create({
+      trigger: gap,
+      start: "top bottom",
+      end: "top 22%",
+      onUpdate: (self) => paint(self.progress),
+      onRefresh: (self) => paint(self.progress),
+    });
+  }
+</script>
+
 <style>
+  /* --dawn runs 0 → 1 as the section scrolls in: 0 is the hero's black, 1 the page's white. */
+  .gap {
+    --p: var(--dawn, 1);
+    --fg: color-mix(in srgb, var(--ink) calc(var(--p) * 100%), #f5f5f7);
+    background: color-mix(in srgb, var(--white) calc(var(--p) * 100%), var(--black));
+    color: var(--fg);
+  }
+  .gap.gap .h-1 .muted { color: color-mix(in srgb, var(--red) calc(var(--p) * 100%), #e8384d); }
   .muted { color: var(--mute); }
   .nowrap { white-space: nowrap; }
-  .counter { margin: 24px 0 0; font-size: 15px; color: var(--ink); }
+  .counter { margin: 24px 0 0; font-size: 15px; color: var(--fg); }
   .grid {
     margin-top: clamp(48px, 7vw, 88px);
     display: grid;
@@ -34,10 +61,10 @@ const physical = 15;
   .grid i {
     aspect-ratio: 1;
     border-radius: 50%;
-    background: #e8e8ed;
+    background: color-mix(in srgb, #e8e8ed calc(var(--p) * 100%), #2c2c2e);
     transition: background 0.5s var(--ease), transform 0.5s var(--ease);
   }
-  .grid i.on { background: var(--ink); }
+  .grid i.on { background: var(--fg); }
   .grid i.last { background: var(--red); transform: scale(1.25); }
   .legend {
     margin-top: 28px;
@@ -49,8 +76,8 @@ const physical = 15;
   }
   .legend span { display: inline-flex; align-items: center; gap: 8px; }
   .legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-  .legend i.on { background: var(--ink); }
-  .legend i.full { background: var(--ink); box-shadow: 14px 0 0 var(--ink), 28px 0 0 var(--ink); margin-right: 28px; }
+  .legend i.on { background: var(--fg); }
+  .legend i.full { background: var(--fg); box-shadow: 14px 0 0 var(--fg), 28px 0 0 var(--fg); margin-right: 28px; }
   @media (max-width: 640px) {
     .grid { grid-template-columns: repeat(8, 1fr); }
   }

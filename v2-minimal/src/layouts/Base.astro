@@ -1,13 +1,19 @@
 ---
 import "../styles/global.css";
+import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import Wordmark from "../components/Wordmark.astro";
 import { url } from "../lib/site";
 
-interface Props { title?: string; description?: string }
+interface Props { title?: string; description?: string; image?: ImageMetadata; imageAlt?: string }
 const {
   title = "Zaro — Know your blood.",
   description = "One blood draw. Over 100 markers. One number that tells you where you stand.",
+  image,
+  imageAlt,
 } = Astro.props;
+const og = image && (await getImage({ src: image, width: 1200, height: 630, fit: "cover", format: "jpg", quality: 85 }));
+const ogUrl = og && new URL(og.src, Astro.site).href;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 const buy = "https://zarohealth.com/pricing";
 const path = Astro.url.pathname;
@@ -19,6 +25,17 @@ const path = Astro.url.pathname;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#000000" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {ogUrl && (
+      <>
+        <meta property="og:image" content={ogUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        {imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+        <meta name="twitter:card" content="summary_large_image" />
+      </>
+    )}
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

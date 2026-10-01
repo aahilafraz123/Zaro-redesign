@@ -1,59 +1,54 @@
 ---
 import { BUY, url } from "../lib/site";
 
-const systems = ["Heart.", "Hormones.", "Metabolism.", "Thyroid.", "Nutrients."];
 const still = (s: string) => ({ d: url(`hero/${s}-d.webp`), m: url(`hero/${s}-m.webp`) });
-const stills = { s0: still("s0"), s1: still("s1"), s2: still("s2") };
+const stills = { s0: still("s0"), s2: still("s2") };
 ---
 <section class="hero dark" id="top" data-state="s0" aria-label="Zaro: know your blood">
-  <div class="media" aria-hidden="true">
-    {Object.entries(stills).map(([k, v]) => (
-      <picture class={`layer still ${k}`} data-layer={k}>
-        <source media="(max-width: 820px)" srcset={v.m} />
-        <img src={v.d} alt="" decoding="async" fetchpriority={k === "s0" ? "high" : "low"} />
-      </picture>
-    ))}
-    <video class="layer" data-layer="t1" muted playsinline preload="none"></video>
-    <video class="layer" data-layer="t1r" muted playsinline preload="none"></video>
-    <video class="layer" data-layer="loop" muted playsinline loop preload="none"></video>
-    <video class="layer" data-layer="t2" muted playsinline preload="none"></video>
-    <video class="layer" data-layer="t2r" muted playsinline preload="none"></video>
-    <div class="glow"></div>
+  <div class="stage">
+    <div class="media" aria-hidden="true">
+      {Object.entries(stills).map(([k, v]) => (
+        <picture class={`layer still ${k}`} data-layer={k}>
+          <source media="(max-width: 820px)" srcset={v.m} />
+          <img src={v.d} alt="" decoding="async" fetchpriority={k === "s0" ? "high" : "low"} />
+        </picture>
+      ))}
+      <video class="layer" data-layer="t1" muted playsinline preload="none"></video>
+      <video class="layer" data-layer="t2" muted playsinline preload="none"></video>
+      <video class="layer" data-layer="t2r" muted playsinline preload="none"></video>
+      <video class="layer" data-layer="t1r" muted playsinline preload="none"></video>
+      <div class="glow"></div>
+      <div class="fade"></div>
+    </div>
+
+    <div class="copy">
+      <div class="beat beat-open" data-on="s0">
+        <h1 class="h-display">Know your blood.</h1>
+        <p class="lede">Every answer starts with a single drop.</p>
+      </div>
+
+      <div class="beat beat-bottom" data-on="t1">
+        <p class="h-1">Over 100 markers.<br /><span class="dim">One draw.</span></p>
+      </div>
+
+      <div class="beat beat-bottom" data-on="t2">
+        <p class="h-1">Zaro reads them all.<br /><span class="dim">And gives you one number.</span></p>
+      </div>
+
+      <div class="beat beat-score" data-on="s2">
+        <p class="score">78</p>
+        <p class="score-label">Your Zaro Score</p>
+      </div>
+
+      <div class="beat beat-cta" data-on="s2">
+        <a href={BUY} class="btn btn-red">Find your test</a>
+        <a href="#how" class="link">See how it works</a>
+      </div>
+
+      <a href="#gap" class="skip beat" data-on="s0 t1 t2">Skip intro</a>
+      <p class="cue beat" data-on="s0" aria-hidden="true">Scroll</p>
+    </div>
   </div>
-
-  <div class="beat beat-open" data-on="s0">
-    <h1 class="h-display">Know your blood.</h1>
-    <p class="lede">Every answer starts with a single drop.</p>
-  </div>
-
-  <div class="beat beat-bottom" data-on="t1">
-    <p class="h-1">Over 100 markers.<br /><span class="dim">One draw.</span></p>
-  </div>
-
-  <ul class="beat beat-list" data-on="s1">
-    {systems.map((s, i) => <li style={`--i:${i}`}>{s}</li>)}
-  </ul>
-
-  <div class="beat beat-bottom" data-on="t2">
-    <p class="h-1">Zaro reads them all.<br /><span class="dim">And gives you one number.</span></p>
-  </div>
-
-  <div class="beat beat-score" data-on="s2">
-    <p class="score">78</p>
-    <p class="score-label">Your Zaro Score</p>
-  </div>
-
-  <div class="beat beat-cta" data-on="s2">
-    <a href={BUY} class="btn btn-red">Find your test</a>
-    <a href="#how" class="link">See how it works</a>
-  </div>
-
-  <ol class="dots" aria-hidden="true">
-    <li data-dot></li><li data-dot></li><li data-dot></li>
-  </ol>
-
-  <a href="#gap" class="skip beat" data-on="s0 t1 s1 t2">Skip intro</a>
-  <p class="cue beat" data-on="s0 s1" aria-hidden="true">Scroll</p>
 </section>
 
 <script>
@@ -67,8 +62,12 @@ const stills = { s0: still("s0"), s1: still("s1"), s2: still("s2") };
     position: relative;
     height: 100vh;
     height: 100svh;
-    overflow: hidden;
     background: #000;
+  }
+  .stage {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
   }
 
   /* Media layers: one visible at a time, crossfading. */
@@ -84,7 +83,7 @@ const stills = { s0: still("s0"), s1: still("s1"), s2: still("s2") };
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    transition: opacity 0.35s ease;
+    transition: opacity 0.45s ease;
   }
   .layer.on {
     opacity: 1;
@@ -102,6 +101,20 @@ const stills = { s0: still("s0"), s1: still("s1"), s2: still("s2") };
   @keyframes float {
     0%, 100% { transform: translateY(0) scale(1); }
     50% { transform: translateY(-1.2%) scale(1.012); }
+  }
+  /* Melt the footage into the next section's colour (black, brightening with its dawn), so they meet seamlessly. */
+  .fade {
+    --edge: color-mix(in srgb, var(--white) calc(var(--dawn, 0) * 100%), var(--black));
+    position: absolute;
+    inset: auto 0 0;
+    height: 30%;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      color-mix(in srgb, var(--edge) 35%, transparent) 45%,
+      color-mix(in srgb, var(--edge) 80%, transparent) 78%,
+      var(--edge)
+    );
   }
   .glow {
     position: absolute;
@@ -142,6 +155,14 @@ const stills = { s0: still("s0"), s1: still("s1"), s2: still("s2") };
     }
   }
 
+  /* All the words, dissolving as the next section's dawn brightens the bottom of the hero. */
+  .copy {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: calc(1 - var(--dawn, 0) * 1.6);
+  }
+
   /* Text beats */
   /* Centred with auto margins (not translate: the CSS minifier drops translate next to transform). */
   .beat {
@@ -180,31 +201,6 @@ const stills = { s0: still("s0"), s1: still("s1"), s2: still("s2") };
   .dim {
     color: #86868b;
   }
-  .beat-list {
-    top: 50%;
-    translate: 0 -50%;
-    list-style: none;
-    padding: 0;
-    text-align: left;
-    font-size: clamp(40px, 6.4vw, 88px);
-    font-weight: 600;
-    letter-spacing: -0.045em;
-    line-height: 1.02;
-  }
-  .beat-list li {
-    color: #f5f5f7;
-    opacity: 0;
-    transform: translateX(-14px);
-    transition: opacity 0.6s var(--ease), transform 0.8s var(--ease);
-    transition-delay: calc(var(--i) * 90ms + 120ms);
-  }
-  .beat-list.show li {
-    opacity: 1;
-    transform: none;
-  }
-  .beat-list li:nth-child(even) {
-    color: #6e6e73;
-  }
   .beat-score {
     top: 47%;
     translate: 0 -50%;
@@ -229,28 +225,6 @@ const stills = { s0: still("s0"), s1: still("s1"), s2: still("s2") };
     gap: 28px;
   }
 
-  .dots {
-    position: absolute;
-    right: clamp(16px, 3vw, 36px);
-    top: 50%;
-    translate: 0 -50%;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 10px;
-  }
-  .dots li {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: rgba(245, 245, 247, 0.28);
-    transition: background 0.4s, transform 0.4s var(--ease);
-  }
-  .dots li.on {
-    background: var(--red);
-    transform: scale(1.5);
-  }
   .skip {
     left: auto;
     right: clamp(16px, 3vw, 36px);

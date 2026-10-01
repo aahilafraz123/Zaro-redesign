@@ -34,6 +34,21 @@
       ],
       "port": 3219,
       "autoPort": true
+    },
+    {
+      "name": "zaro-minimal-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "v2-minimal",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "4329"
+      ],
+      "port": 4329,
+      "autoPort": true
     }
   ]
 }

@@ -258,3 +258,12 @@ a {
     transition: none;
   }
 }
+
+/* Accent half of two-tone headlines */
+:is(.h-display, .h-1, .h-2):is([class]) :is(.muted, .dim) {
+  color: var(--red);
+}
+
+.dark :is(.h-display, .h-1, .h-2):is([class]) :is(.muted, .dim) {
+  color: #e8384d;
+}

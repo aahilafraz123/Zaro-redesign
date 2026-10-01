@@ -168,8 +168,8 @@ const groups = Object.entries(HORMONES);
   .hero .lede { margin-top: 28px; max-width: 32ch; }
   .ctas { margin-top: 36px; display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
   .portrait { margin: 0; position: relative; border-radius: 32px; overflow: hidden; aspect-ratio: 4 / 5; background: #111; }
-  .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: grayscale(1) contrast(1.06); transition: filter 1.2s var(--ease); }
-  .portrait:hover img { filter: grayscale(0.15) contrast(1.02); }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: contrast(1.04) saturate(1.05); transition: filter 1.2s var(--ease); }
+  .portrait:hover img { filter: contrast(1.04) saturate(1.1); }
   .portrait figcaption {
     position: absolute; left: 16px; right: 16px; bottom: 16px; padding: 14px 16px; border-radius: 18px;
     background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);

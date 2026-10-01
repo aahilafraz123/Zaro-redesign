@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import Cover from "../../components/Cover.astro";
-import { fmtDate, url } from "../../lib/site";
+import { coverProps, fmtDate, url } from "../../lib/site";
 
 const posts = (await getCollection("journal")).sort((a, b) => +b.data.date - +a.data.date);
 const [lead, ...rest] = posts;
@@ -22,7 +22,7 @@ const tones = ["paper", "black", "white", "black"] as const;
     <section class="lead" aria-label="Latest article">
       <div class="wrap">
         <a href={url(`journal/${lead.id}/`)} class="lead-card card" data-reveal>
-          <Cover glyph={lead.data.glyph} caption={lead.data.caption} topic={lead.data.topic} size="lg" class="lead-cover" />
+          <Cover {...coverProps(lead.data)} size="lg" class="lead-cover" sizes="(max-width: 820px) 100vw, 640px" eager />
           <div class="lead-copy">
             <p class="meta">Latest · {fmtDate(lead.data.date)}</p>
             <h2 class="h-2">{lead.data.title}</h2>
@@ -45,7 +45,7 @@ const tones = ["paper", "black", "white", "black"] as const;
           {rest.map((p, i) => (
             <li data-topic-item={p.data.topic}>
               <a href={url(`journal/${p.id}/`)} class="card" data-reveal style={`--d:${0.06 * i}s`}>
-                <Cover glyph={p.data.glyph} caption={p.data.caption} topic={p.data.topic} tone={tones[i % tones.length]} />
+                <Cover {...coverProps(p.data)} tone={tones[i % tones.length]} />
                 <p class="meta">{fmtDate(p.data.date)}</p>
                 <h3 class="h-3">{p.data.title}</h3>
                 <p class="ex">{p.data.excerpt}</p>
@@ -54,7 +54,7 @@ const tones = ["paper", "black", "white", "black"] as const;
           ))}
           <li data-topic-item={lead.data.topic} class="lead-dup" hidden>
             <a href={url(`journal/${lead.id}/`)} class="card">
-              <Cover glyph={lead.data.glyph} caption={lead.data.caption} topic={lead.data.topic} />
+              <Cover {...coverProps(lead.data)} />
               <p class="meta">{fmtDate(lead.data.date)}</p>
               <h3 class="h-3">{lead.data.title}</h3>
               <p class="ex">{lead.data.excerpt}</p>

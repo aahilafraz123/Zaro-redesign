@@ -2,7 +2,7 @@
 import { getCollection, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import Cover from "../../components/Cover.astro";
-import { BUY, fmtDate, url } from "../../lib/site";
+import { BUY, coverProps, fmtDate, url } from "../../lib/site";
 
 export async function getStaticPaths() {
   const posts = (await getCollection("journal")).sort((a, b) => +b.data.date - +a.data.date);
@@ -21,7 +21,7 @@ const disclaimer =
   d.disclaimer ??
   "This article is for educational purposes and is not a substitute for professional medical advice. Always talk to a physician about your specific results and health history.";
 ---
-<Base title={`${d.title} · Zaro Journal`} description={d.excerpt}>
+<Base title={`${d.title} · Zaro Journal`} description={d.excerpt} image={d.cover} imageAlt={d.coverAlt}>
   <main>
     <article>
       <header class="head">
@@ -42,7 +42,7 @@ const disclaimer =
       </header>
 
       <div class="wrap wide">
-        <Cover glyph={d.glyph} caption={d.caption} topic={d.topic} size="lg" class="hero-cover" />
+        <Cover {...coverProps(d)} size="lg" class="hero-cover" sizes="(max-width: 1216px) calc(100vw - 2 * clamp(20px, 5vw, 48px)), 1120px" eager />
       </div>
 
       <div class="wrap narrow body">
